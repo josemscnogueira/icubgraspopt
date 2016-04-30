@@ -1,0 +1,5 @@
+-Iinclude
+-I../bayesopt/include
+-I../bayesopt/utils
+-I/usr/local/include
+-I/usr/include/eigen3

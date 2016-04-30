@@ -9,11 +9,12 @@
 /**************************************************************************************************
  *  Include Files                                                                                 *
  **************************************************************************************************/
-#include <OptFuncs.h>
+#include <OptFuncs.hpp>
 
 #include <tgpnode.hpp>
 #include <boost/numeric/ublas/assignment.hpp>
 
+namespace bayesopt {
 
 double Martinez::evaluate(vectord x)
 {
@@ -62,3 +63,5 @@ double Martinez::evaluate(vectord x)
 
     return -result;
 }
+
+} // End of namespace bayesopt

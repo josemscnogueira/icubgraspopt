@@ -9,9 +9,10 @@
 /**************************************************************************************************
  *  Include Files                                                                                 *
  **************************************************************************************************/
-#include <iCubOptimizable.h>
-#include <iCubHand.h>
+#include <iCubOptimizable.hpp>
+#include <iCubHand.hpp>
 #include <boost/lexical_cast.hpp>
+#include <chrono>
 
 
 /**************************************************************************************************
@@ -33,6 +34,8 @@ using VirtualRobot::CollisionChecker;
 #define METRIC_START_VALUE   0.000
 #define METRIC_ENDED_VALUE   1.000
 #define METRIC_STEP          0.001
+
+namespace bayesopt {
 
 /**************************************************************************************************
  *  Procecure                                                                                     *
@@ -391,7 +394,7 @@ void iCubOptimizable::showBestGrasps(uint index, LearningQueueWrapper& best_gras
  *  Description: getOptParams                                                                     *
  *  Class      : iCubOptimizable                                                                  *
  **************************************************************************************************/
-void iCubOptimizable::getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
+void iCubOptimizable::getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
 {
     TGPOptimizable::getOptParams(tgp_params, opt_params);
 
@@ -515,7 +518,7 @@ void iCubOptimizable::chooseActiveVariables(vectord& query)
  *  Description: fillOthers                                                                       *
  *  Class      : iCubOptimizable                                                                  *
  **************************************************************************************************/
-void iCubOptimizable::fillOthers(iCubOptParameters& icub_params, tgp_parameters& tgp_params)
+void iCubOptimizable::fillOthers(iCubOptParameters& icub_params, TgpParameters& tgp_params)
 {
     tgp_params.others.clear();
 
@@ -609,3 +612,5 @@ void iCubOptimizable::fillOthers(iCubOptParameters& icub_params, tgp_parameters&
         tgp_params.others.push_back(s_aux);
     }
 }
+
+} // End of namespace bayesopt

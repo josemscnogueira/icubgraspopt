@@ -6,8 +6,8 @@
  **************************************************************************************************/
 
 
-#ifndef _iCubOptimizable_h_
-#define _iCubOptimizable_h_
+#ifndef _iCubOptimizable_hpp_
+#define _iCubOptimizable_hpp_
 
 /**************************************************************************************************
  *  Include Files                                                                                 *
@@ -20,16 +20,15 @@
 #include <boost/pointer_cast.hpp>
 #include <VirtualRobot/VirtualRobotCommon.h>
 #include <Eigen/Dense>
-#include <bayesopt.hpp>
+#include <bayesopt/bayesopt.hpp>
 #include <queue>
 #include <random>
 
 #include <tgpoptimizable.hpp>
 #include <learningqueue.hpp>
 
-#include <iCub.h>
-#include <iCubHand.h>
-#include <RKHS.h>
+#include <iCub.hpp>
+#include <iCubHand.hpp>
 #include <iCubOptParameters.h>
 
 
@@ -80,6 +79,7 @@ public:
     }
 };
 
+namespace bayesopt {
 
 /**************************************************************************************************
  *  Class: GraspOptimization                                                                      *
@@ -101,13 +101,13 @@ public:
     double              evaluate              (vectord             query);
     void                showBestGrasps        (uint index,         LearningQueueWrapper& best_grasps);
     void                initSamples           (vecOfvec& xx, vectord& yy) { };
-    void                getOptParams          (tgp_parameters& tgp_params, bopt_params& opt_params);
+    void                getOptParams          (TgpParameters& tgp_params, Parameters& opt_params);
     void                getBoundingBox        (vectord& lower, vectord& upper);
 
     // Static Methods
     static iCubOptParameters initDefaultParams(void);
     static void              initDefaultParams(iCubOptParameters& params);
-    static void              fillOthers       (iCubOptParameters& icub_params, tgp_parameters& tgp_params);
+    static void              fillOthers       (iCubOptParameters& icub_params, TgpParameters& tgp_params);
 
 protected:
     // Attributes
@@ -140,5 +140,7 @@ private:
     void              chooseActiveVariables    (      vectord& query);
 
 };
+
+} // End of namespace bayesopt
 
 #endif // _iCubOptimizable_h_

@@ -4,18 +4,18 @@
  *                                                                                                *
  *  History:                                                                                      *
  **************************************************************************************************/
-#ifndef __TGPOPTIMIZATION_H__
-#define __TGPOPTIMIZATION_H__
+#ifndef __TGPOPTIMIZATION_HPP__
+#define __TGPOPTIMIZATION_HPP__
 
 
 /**************************************************************************************************
  *  Include Files                                                                                 *
  **************************************************************************************************/
-#include <bayesopt.hpp>
+#include <bayesopt/bayesopt.hpp>
 #include <tgpoptimizable.hpp>     // Bayesopt
 #include <learningqueue.hpp>
 #include <treedgaussianprocess.hpp>
-#include <LogManager.h>
+#include <LogManager.hpp>
 
 
 /**************************************************************************************************
@@ -32,8 +32,8 @@ class TGPOptimization : public ContinuousModel
 {
 public:
     // Constructor
-    TGPOptimization(tgp_parameters  tgp_params,
-                    bopt_params     params,
+    TGPOptimization(TgpParameters  tgp_params,
+                    Parameters     params,
                     TGPOptimizable& func,
                     uint            printmode,
                     bool            isTGP  = false,
@@ -53,9 +53,6 @@ public:
 
     uint                 getOptimumIndex       (uint maximum_index);
 
-    // Static methods
-    static bopt_params   initializeOptParams   (void);
-
 protected:
     // Methods
     void    findOptimal             (      vectord&              xOpt );
@@ -68,7 +65,7 @@ protected:
 private:
     // Attributes
     TGPOptimizable&          _func;
-    tgp_parameters           _tgpparams;
+    TgpParameters            _tgpparams;
     bool                     _isTGP;
 
     uint                     _index;

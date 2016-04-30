@@ -10,8 +10,8 @@
  *                      thorugh a set of pre-trained grasps.                                      *
  *                      Hand now closes for a specific grasp preshape. It checks for collisions.  *
  **************************************************************************************************/
-#ifndef _iCub_h_
-#define _iCub_h_
+#ifndef _iCub_hpp_
+#define _iCub_hpp_
 
 /**************************************************************************************************
  *  Include Files                                                                                 *
@@ -23,10 +23,9 @@
 #include <VirtualRobot/VirtualRobotCommon.h>
 #include <Eigen/Dense>
 #include <algorithm>
-#include <bayesopt.hpp>
 
-#include <iCubHand.h>
-#include <ApproachMovementSpace.h>
+#include <iCubHand.hpp>
+#include <ApproachMovementSpace.hpp>
 
 /**************************************************************************************************
  *  Used namespaces                                                                               *

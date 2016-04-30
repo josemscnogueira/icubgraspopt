@@ -4,15 +4,14 @@
  *                                                                                                *
  *  History:                                                                                      *
  **************************************************************************************************/
-#ifndef __RKHS_H__
-#define __RKHS_H__
+#ifndef __RKHS_HPP__
+#define __RKHS_HPP__
 
 
 /**************************************************************************************************
  *  Include Files                                                                                 *
  **************************************************************************************************/
 #include <string>           // Global
-#include <chrono>
 #include <stdlib.h>
 #include <Python.h>
 #include <boost/random.hpp>
@@ -28,6 +27,8 @@ typedef boost::mt19937                                            RandomEngine;
 typedef boost::uniform_real<>                                     RealDistribution;
 typedef boost::variate_generator<RandomEngine&, RealDistribution> Generator;
 
+
+namespace bayesopt {
 
 /**************************************************************************************************
  *  Class: RKHS                                                                                   *
@@ -52,7 +53,10 @@ public:
     double evaluate      (vectord         x);
     void   initSamples   (vecOfvec&       xx        , vectord&     yy);
     void   evaluateRandom(vecOfvec&       xx        , vectord&     yy, uint number, double min = 0.0, double max = 1.0);
-    void   getOptParams  (tgp_parameters& tgp_params, bopt_params& opt_params);
+    void   getOptParams  (TgpParameters& tgp_params, Parameters& opt_params);
 };
+
+} // End of namespace bayesopt
+
 
 #endif // __RKHS_H__

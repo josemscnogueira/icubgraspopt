@@ -8,7 +8,7 @@
  /**************************************************************************************************
   *  Include Files                                                                                 *
   **************************************************************************************************/
-#include <LogManager.h>
+#include <LogManager.hpp>
 #include <chrono>
 #include <random>
 #include <numeric>
@@ -16,6 +16,7 @@
 #include <learningqueue.hpp>
 #include <treedgaussianprocess.hpp>
 
+using namespace bayesopt;
 
 /**************************************************************************************************
  *  Procecure                                                                                     *
@@ -83,7 +84,7 @@ LogManager::LogManager(uint type, std::string dir_name) : LogManager(type)
  *  Description: Constructor                                                                      *
  *  Class      : LogManager                                                                       *
  **************************************************************************************************/
-LogManager::LogManager(uint type, bool& isTGP, tgp_parameters& tgp_params, bopt_params& opt_params, TGPOptimizable& func) : LogManager(type)
+LogManager::LogManager(uint type, bool& isTGP, TgpParameters& tgp_params, Parameters& opt_params, TGPOptimizable& func) : LogManager(type)
 {
     std::string dir_name = optimizationToString(isTGP, tgp_params, opt_params, func);
 
@@ -126,7 +127,7 @@ LogManager::LogManager(TGPOptimizable& func) : LogManager(LOG_OBJ_FUNCTION)
  *  Description: Constructor                                                                      *
  *  Class      : LogManager                                                                       *
  **************************************************************************************************/
-LogManager::LogManager(TGPOptimizable& func, tgp_parameters& tgp_params) : LogManager(func)
+LogManager::LogManager(TGPOptimizable& func, TgpParameters& tgp_params) : LogManager(func)
 {
     _tgp_params = &tgp_params;
 }
@@ -630,11 +631,8 @@ void LogManager::printCurrIter(uint iteration, LearningQueueWrapper& results, ba
 
         for (vectord query = vectord(1, 0.0); query(0) < 1; query(0) += 0.001)
         {
-            vectord c_parameters(_opt_params -> n_crit_params);
-            std::copy(_opt_params -> crit_params, _opt_params -> crit_params + _opt_params -> n_crit_params, c_parameters.begin());
-
             bayesopt::UnscentedExpectedImprovement* uei = new bayesopt::UnscentedExpectedImprovement(1);
-                                                    uei -> setParameters(c_parameters);
+                                                    uei -> setParameters(_opt_params -> crit_params);
 
             std::vector<vectord>          xx;
             std::vector<double >          w;
@@ -1500,7 +1498,7 @@ void LogManager::getMonteCarloPoints(uint points, const vectord query, std::vect
  *  Description: optimizationToString                                                             *
  *  Class      : LogManager                                                                       *
  **************************************************************************************************/
-std::string LogManager::optimizationToString(bool isTGP, tgp_parameters tgp_params, bopt_params opt_params, TGPOptimizable& func)
+std::string LogManager::optimizationToString(bool isTGP, TgpParameters tgp_params, Parameters opt_params, TGPOptimizable& func)
 {
     std::string s = std::string("");
 

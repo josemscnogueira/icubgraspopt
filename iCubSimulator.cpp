@@ -1,23 +1,19 @@
-#include <omp.h>
-
-#include "Window.h"
+//#include "Window.h"
 #include <tgpoptimizable.hpp>
 #include <criteria/criteria_uei.hpp>
-#include <tgpparameters.h>
-#include <TGPOptimization.h>
-#include <OptFuncs.h>
-#include <RKHS.h>
-#include <LogManager.h>
+#include <TGPOptimization.hpp>
+#include <OptFuncs.hpp>
+#include <RKHS.hpp>
+#include <LogManager.hpp>
 
 using namespace bayesopt;
-
 
 
 void funcProfile(int argc, char *argv[])
 {
     TGPOptimizable* func       = new RKHS();
-    bopt_params     opt_param;
-    tgp_parameters  tgp_param;
+    Parameters     opt_param;
+    TgpParameters  tgp_param;
 
     func -> getOptParams(tgp_param, opt_param);
 
@@ -36,8 +32,8 @@ void synthBayesOpt(uint index, uint tests)
     vectord         bestpoint, upper, lower;
     TGPOptimizable* func       = new GramacyExponential();
 
-    bopt_params     opt_param;
-    tgp_parameters  tgp_param;
+    Parameters     opt_param;
+    TgpParameters  tgp_param;
 
     func -> getOptParams(tgp_param, opt_param);
 
@@ -70,26 +66,26 @@ void synthBayesOpt(uint index, uint tests)
 }
 
 
-void simoxBayesOpt(uint index, uint tests, int argc, char *argv[])
-{
-    // Variavbles
-    ShowWindow *SimWindow;
-
-    // Initiate Qt
-    SoDB::init();
-    SoQt::init(argc, argv, "iCubSimulator");
-
-    std::cout << "Simulator Started" << std::endl;
-
-    // Simulator Window Initialization
-    // SimWindow = new ShowWindow();
-    SimWindow = new ShowWindow(index, tests);
-
-    // Simulator Main Loop
-    SimWindow -> main();
-
-    std::cout << "Simulator Ended" << std::endl;
-}
+// void simoxBayesOpt(uint index, uint tests, int argc, char *argv[])
+// {
+//     // Variavbles
+//     ShowWindow *SimWindow;
+//
+//     // Initiate Qt
+//     SoDB::init();
+//     SoQt::init(argc, argv, "iCubSimulator");
+//
+//     std::cout << "Simulator Started" << std::endl;
+//
+//     // Simulator Window Initialization
+//     // SimWindow = new ShowWindow();
+//     SimWindow = new ShowWindow(index, tests);
+//
+//     // Simulator Main Loop
+//     SimWindow -> main();
+//
+//     std::cout << "Simulator Ended" << std::endl;
+// }
 
 
 

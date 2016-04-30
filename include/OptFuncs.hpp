@@ -4,8 +4,8 @@
  *                                                                                                *
  *  History:                                                                                      *
  **************************************************************************************************/
-#ifndef __OPTFUNCS_H__
-#define __OPTFUNCS_H__
+#ifndef __OPTFUNCS_HPP__
+#define __OPTFUNCS_HPP__
 
 
 /**************************************************************************************************
@@ -16,6 +16,7 @@
 
 #include <tgpoptimizable.hpp>
 
+namespace bayesopt {
 
 /**************************************************************************************************
  *  Class: GramacyExponential                                                                     *
@@ -40,7 +41,7 @@ public:
     };
 
 
-    void getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
+    void getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
     {
         TGPOptimizable::getOptParams(tgp_params, opt_params);
 
@@ -88,7 +89,7 @@ public:
     };
 
 
-    void getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
+    void getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
     {
         TGPOptimizable::getOptParams(tgp_params, opt_params);
 
@@ -129,7 +130,7 @@ public:
     };
 
 
-    void getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
+    void getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
     {
         TGPOptimizable::getOptParams(tgp_params, opt_params);
 
@@ -174,7 +175,7 @@ public:
     };
 
 
-    void getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
+    void getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
     {
         TGPOptimizable::getOptParams(tgp_params, opt_params);
 
@@ -225,7 +226,7 @@ public:
       return branin + (5 * easom);
     };
 
-    void getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
+    void getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
     {
         TGPOptimizable::getOptParams(tgp_params, opt_params);
 
@@ -278,7 +279,7 @@ public:
         return -result;
     };
 
-    void getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
+    void getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
     {
         TGPOptimizable::getOptParams(tgp_params, opt_params);
 
@@ -307,7 +308,7 @@ public:
     // Methods
     double evaluate(vectord x);
 
-    void getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
+    void getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
     {
         TGPOptimizable::getOptParams(tgp_params, opt_params);
 
@@ -323,6 +324,8 @@ public:
 
     void initSamples(vecOfvec& xx, vectord& yy) { };
 };
+
+}
 
 
 #endif // __OPTFUNCS_H__

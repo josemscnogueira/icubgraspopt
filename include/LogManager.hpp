@@ -4,8 +4,8 @@
  *                                                                                                *
  *  History:                                                                                      *
  **************************************************************************************************/
-#ifndef __LOGMANAGER_H__
-#define __LOGMANAGER_H__
+#ifndef __LOGMANAGER_HPP__
+#define __LOGMANAGER_HPP__
 
 
 /**************************************************************************************************
@@ -17,7 +17,7 @@
 #include <string>
 #include <boost/filesystem.hpp>
 
-#include <bayesopt.hpp>
+#include <bayesopt/bayesopt.hpp>
 #include <tgpoptimizable.hpp>     // Bayesopt
 #include <learningqueue.hpp>
 
@@ -54,9 +54,9 @@ public:
     LogManager(void);
     LogManager(uint type);
     LogManager(uint type, std::string dir_name);
-    LogManager(uint type, bool& isTGP, tgp_parameters& tgp_params, bopt_params& opt_params, TGPOptimizable& func);
-    LogManager(TGPOptimizable& func);
-    LogManager(TGPOptimizable& func, tgp_parameters& tgp_params);
+    LogManager(uint type, bool& isTGP, bayesopt::TgpParameters& tgp_params, bayesopt::Parameters& opt_params, bayesopt::TGPOptimizable& func);
+    LogManager(bayesopt::TGPOptimizable& func);
+    LogManager(bayesopt::TGPOptimizable& func, bayesopt::TgpParameters& tgp_params);
 
     // Methods
     void cleanFolderContents    (void);
@@ -72,7 +72,10 @@ public:
     void printMonteCarlo        (uint points, const vectord query, std::vector<double> std_dev);
 
     // Static methods
-    static std::string optimizationToString(bool isTGP, tgp_parameters tgp_params, bopt_params opt_params, TGPOptimizable& func);
+    static std::string optimizationToString(bool                      isTGP,
+                                            bayesopt::TgpParameters   tgp_params,
+                                            bayesopt::Parameters      opt_params,
+                                            bayesopt::TGPOptimizable& func);
 
 private:
     // File system Attributes
@@ -81,10 +84,10 @@ private:
     std::ofstream            _output;
 
     // Optimization References
-    bopt_params*     _opt_params;
-    tgp_parameters*  _tgp_params;
-    TGPOptimizable*  _func;
-    bool*            _isTGP;
+    bayesopt::Parameters*      _opt_params;
+    bayesopt::TgpParameters*   _tgp_params;
+    bayesopt::TGPOptimizable*  _func;
+    bool*                      _isTGP;
 
     uint             _type;
     uint             _mode;

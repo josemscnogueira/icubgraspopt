@@ -8,7 +8,7 @@
 /**************************************************************************************************
  *  Include Files                                                                                 *
  **************************************************************************************************/
-#include <TGPOptimization.h>
+#include <TGPOptimization.hpp>
 #include <locale>
 #include <vector>
 #include <string>
@@ -27,7 +27,7 @@ namespace bayesopt
  *  Description: Constructor                                                                      *
  *  Class      : TGPOptimization                                                                  *
  **************************************************************************************************/
-TGPOptimization::TGPOptimization(tgp_parameters tgp_params, bopt_params params, TGPOptimizable& func, uint printmode, bool isTGP, uint index)
+TGPOptimization::TGPOptimization(TgpParameters tgp_params, Parameters params, TGPOptimizable& func, uint printmode, bool isTGP, uint index)
 :
 ContinuousModel(tgp_params.dimensions, params),
 _func          (func)
@@ -261,42 +261,6 @@ bool TGPOptimization::checkReachability(const vectord& query)
 /**************************************************************************************************
  *  Procecure                                                                                     *
  *                                                                                                *
- *  Description: initializeOptParams                                                              *
- *  Class      : TGPOptimization                                                                  *
- **************************************************************************************************/
-bopt_params TGPOptimization::initializeOptParams(void)
-{
-    bopt_params  opt_param       = initialize_parameters_to_default();
-
-    opt_param.n_iterations       =   200; // Maximum BayesOpt evaluations (budget)
-    // opt_param.n_inner_iterations =      ; // Maximum inner optimizer evaluations
-    opt_param.n_init_samples     =    10; // Number of samples before optimization (2-3 per dimension)
-    opt_param.n_iter_relearn     =     1; // Number of samples before relearn kernel
-
-    opt_param.init_method        =     1; // Sampling method for initial set 1-LHS, 2-Sobol (if available),
-
-    opt_param.l_type             = L_MCMC; // Type of learning for the kernel params
-
-    opt_param.sigma_s            =   1;
-    opt_param.epsilon            =   0.05;
-    opt_param.force_jump         =   3;
-    opt_param.noise              =   0.001;
-    opt_param.verbose_level      =   1;
-
-    opt_param.kernel.name        = "kMaternARD5";
-
-    opt_param.crit_name          = "cBEI";
-    opt_param.crit_params[0]     =   1;   // exp
-    opt_param.crit_params[1]     =   0.1; // bias
-    opt_param.n_crit_params      =   2;
-
-    return opt_param;
-}
-
-
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
  *  Description: getBestResults                                                                   *
  *  Class      : TGPOptimization                                                                  *
  **************************************************************************************************/
@@ -314,13 +278,8 @@ LearningQueueWrapper TGPOptimization::getBestResults(void)
  **************************************************************************************************/
 void TGPOptimization::getUnscentedSigmaPoints(const vectord x, std::vector<vectord>& xx, std::vector<double>& w)
 {
-    uint    n_parameters = 2 + 2 + (_func.dim * _func.dim);
-    vectord c_parameters(n_parameters);
-
-    std::copy(mParameters.crit_params, mParameters.crit_params + n_parameters, c_parameters.begin());
-
     UnscentedExpectedImprovement* uei = new UnscentedExpectedImprovement(_func.dim);
-                                  uei -> setParameters(c_parameters);
+                                  uei -> setParameters(mParameters.crit_params);
 
     uei -> getSamples(x, xx, w);
 
@@ -349,7 +308,7 @@ uint TGPOptimization::getOptimumIndex(uint maximum_index)
     double         best   = data -> getSampleY(0);
 
     // If it is not the Uscented Expected Improvement Criteria
-    if ( std::strcmp(mParameters.crit_name, "cUEI") != 0 )
+    if ( mParameters.crit_name.compare("cUEI") != 0 )
     {
         for (uint index = 1; index < n_data; index += 1)
         {

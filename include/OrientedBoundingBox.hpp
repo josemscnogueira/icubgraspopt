@@ -4,8 +4,8 @@
  *                                                                                                *
  *  History:                                                                                      *
  **************************************************************************************************/
-#ifndef _OrientedBoundingBox_h_
-#define _OrientedBoundingBox_h_
+#ifndef _OrientedBoundingBox_hpp_
+#define _OrientedBoundingBox_hpp_
 
 /**************************************************************************************************
  *  Include Files                                                                                 *

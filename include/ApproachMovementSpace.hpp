@@ -4,8 +4,8 @@
  *                                                                                                *
  *  History:                                                                                      *
  **************************************************************************************************/
-#ifndef _ApproachMovementSpace_h_
-#define _ApproachMovementSpace_h_
+#ifndef _ApproachMovementSpace_hpp_
+#define _ApproachMovementSpace_hpp_
 
 /**************************************************************************************************
  *  Include Files                                                                                 *
@@ -22,7 +22,7 @@
 #include <Eigen/Geometry>
 #include <algorithm>
 
-#include <OrientedBoundingBox.h>
+#include <OrientedBoundingBox.hpp>
 
 
 /**************************************************************************************************

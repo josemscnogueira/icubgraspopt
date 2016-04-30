@@ -8,8 +8,12 @@
 /**************************************************************************************************
  *  Include Files                                                                                 *
  **************************************************************************************************/
-#include <RKHS.h>
+#include <RKHS.hpp>
 
+#include <chrono>
+
+
+namespace bayesopt {
 
 /**************************************************************************************************
  *  Procecure                                                                                     *
@@ -166,7 +170,7 @@ void RKHS::evaluateRandom(vecOfvec& xx, vectord& yy, uint number, double min, do
  *  Description: getOptParams                                                                     *
  *  Class      : RKHS                                                                             *
  **************************************************************************************************/
-void RKHS::getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
+void RKHS::getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
 {
     TGPOptimizable::getOptParams(tgp_params, opt_params);
 
@@ -177,10 +181,7 @@ void RKHS::getOptParams(tgp_parameters& tgp_params, bopt_params& opt_params)
     opt_params.noise             =  1e-6;
     opt_params.sigma_s           =  3.93;
 
-    // for (uint index = 0; index < opt_params.mean.n_coef; index += 1)
-    // {
-    //     opt_params.mean.coef_mean[index] = 0;
-    // }
-
     tgp_params.min_data_per_leaf =  8;
 }
+
+} // End of namespace bayesopt

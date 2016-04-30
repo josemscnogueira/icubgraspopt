@@ -7,8 +7,8 @@
  *                      thorugh a set of pre-trained grasps.                                      *
  *                      Hand now closes for a specific grasp preshape. It checks for collisions.  *
  **************************************************************************************************/
-#ifndef _iCubHand_h_
-#define _iCubHand_h_
+#ifndef _iCubHand_hpp_
+#define _iCubHand_hpp_
 
 
 /**************************************************************************************************

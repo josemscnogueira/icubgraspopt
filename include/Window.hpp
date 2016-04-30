@@ -11,8 +11,8 @@
  *           20141213   The hand now closes using a pre-trained grasp. It checks for collisions.  *
  **************************************************************************************************/
 
-#ifndef _Window_h_
-#define _Window_h_
+#ifndef _Window_hpp_
+#define _Window_hpp_
 
 
 /**************************************************************************************************
