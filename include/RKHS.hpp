@@ -13,11 +13,11 @@
  **************************************************************************************************/
 #include <string>           // Global
 #include <stdlib.h>
-#include <Python.h>
 #include <boost/random.hpp>
 
 #include <specialtypes.hpp> // Bayesopt
 #include <tgpoptimizable.hpp>
+#include <kernels/kernel_gaussian.hpp>
 
 
 /**************************************************************************************************
@@ -36,23 +36,26 @@ namespace bayesopt {
 class RKHS : public TGPOptimizable
 {
 private:
-    PyObject*      _module;
-    PyObject*      _function;
+    vectord _support_1;
+    vectord _support_2;
+    vectord _vals_1;
+    vectord _vals_2;
+    vectord _hyp_1;
+    vectord _hyp_2;
 
-    RandomEngine   _randEngine;
+    SEArd   kernel;
 
 public:
     // Constructor
     RKHS(void);
 
     // Destructor
-    ~RKHS(void);
+    ~RKHS(void) { };
 
     // Methods
-    double evaluate      (double          x);
+    double covSEard      (const vectord&  hyp,  const vectord&     x1, const vectord& x2);
     double evaluate      (vectord         x);
     void   initSamples   (vecOfvec&       xx        , vectord&     yy);
-    void   evaluateRandom(vecOfvec&       xx        , vectord&     yy, uint number, double min = 0.0, double max = 1.0);
     void   getOptParams  (TgpParameters& tgp_params, Parameters& opt_params);
 };
 

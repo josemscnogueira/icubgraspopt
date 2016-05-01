@@ -9,11 +9,16 @@
  *  Include Files                                                                                 *
  **************************************************************************************************/
 #include <RKHS.hpp>
-
-#include <chrono>
+#include <boost/numeric/ublas/vector_proxy.hpp>
 
 
 namespace bayesopt {
+
+
+const std::vector<double> a_support_1 = {0.1, 0.15, 0.08, 0.3, 0.4};
+const std::vector<double> a_support_2 = {0.8, 0.85, 0.9, 0.95, 0.92, 0.74, 0.91, 0.89, 0.79, 0.88, 0.86, 0.96, 0.99, 0.82};
+const std::vector<double> a_vals_1    = {4, -1, 2., -2., 1.};
+const std::vector<double> a_vals_2    = {3, 4, 2, 1, -1, 2, 2, 3, 3, 2., -1., -2., 4., -3.};
 
 /**************************************************************************************************
  *  Procecure                                                                                     *
@@ -28,76 +33,40 @@ RKHS::RKHS(void)
     lower_bound = vectord(1, 0);
     upper_bound = vectord(1, 1);
 
-    // Python path
-    setenv("PYTHONPATH", "./function-rkhs/", 1);
-
-    // Initialize Python interface
-    Py_Initialize();
-
-    // Create Python Objects
-    PyObject*  module_string = PyString_FromString   ((char*)"rkhs");
-              _module        = PyImport_Import       (module_string);
-
-    // Module Check
-    if (_module != NULL) {_function = PyObject_GetAttrString(_module,(char*)"rkhs_synth"); }
-    else                 { PyErr_Print(); exit(-1); }
-
-    // Create Random Number Engine
-    _randEngine.seed(std::chrono::system_clock::now().time_since_epoch().count());
-
     // Update name
     name = std::string("RKHS_1D");
     dim  = 1;
 
-    // Eliminate PyObjects
-    Py_DECREF(module_string);
+    // Define Support Vectors
+    _support_1 = vectord( 5);
+    _support_2 = vectord(14);
+    _vals_1    = vectord( 5);
+    _vals_2    = vectord(14);
+
+    std::copy(a_support_1.begin(), a_support_1.end(), _support_1.begin());
+    std::copy(a_support_2.begin(), a_support_2.end(), _support_2.begin());
+    std::copy(a_vals_1   .begin(), a_vals_1   .end(), _vals_1   .begin());
+    std::copy(a_vals_2   .begin(), a_vals_2   .end(), _vals_2   .begin());
+
+    // Initialize Gaussian Kernels
+    kernel.init(dim);
+    _hyp_1 = vectord(1, 0.10);
+    _hyp_2 = vectord(1, 0.01);
 }
 
 
 /**************************************************************************************************
  *  Procecure                                                                                     *
  *                                                                                                *
- *  Description: Destructor                                                                       *
+ *  Description: covSEard                                                                         *
  *  Class      : RKHS                                                                             *
  **************************************************************************************************/
-RKHS::~RKHS(void)
-{
-    // Eliminate PyObjects
-    Py_DECREF(_module);
-    Py_DECREF(_function);
+ double RKHS::covSEard(const vectord& hyp, const vectord& x1, const vectord& x2)
+ {
+     kernel.setHyperParameters(hyp);
 
-    // Finalize Python Interface
-    Py_Finalize();
-}
-
-
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: evaluate                                                                         *
- *  Class      : RKHS                                                                             *
- **************************************************************************************************/
-double RKHS::evaluate(double x)
-{
-    // Function Argument
-    PyObject* args   = PyTuple_Pack(1,PyFloat_FromDouble(x));
-
-    if (args == NULL) { PyErr_Print(); exit(-1); }
-
-    // Call Function
-    PyObject* result = PyObject_CallObject(_function, args);
-
-    if (result == NULL) { PyErr_Print(); exit(-1); }
-
-    // Convert to double
-    double y = PyFloat_AsDouble(result);
-
-    // Eliminate PyObjects
-    Py_DECREF(args);
-    Py_DECREF(result);
-
-    return -y;
-}
+     return ( boost::numeric::ublas::norm_2(hyp) * boost::numeric::ublas::norm_2(hyp) * kernel(x1, x2));
+ }
 
 
 /**************************************************************************************************
@@ -108,8 +77,24 @@ double RKHS::evaluate(double x)
  **************************************************************************************************/
 double RKHS::evaluate(vectord x)
 {
-    if (x.size() == 1) return evaluate(x(0));
-    else               return 0.0;
+    // Assert x size
+    assert(x.size() == 1);
+
+    double result = 0.0;
+
+    // First kernel length
+    for (uint index = 0; index < _support_2.size(); ++index)
+    {
+        result += _vals_2[index] * covSEard(_hyp_2, vectord(1,_support_2[index]), x);
+    }
+
+    // Second kernel legth
+    for (uint index = 0; index < _support_1.size(); ++index)
+    {
+        result += _vals_1[index] * covSEard(_hyp_1, vectord(1,_support_1[index]), x);
+    }
+
+    return result;
 }
 
 
@@ -135,34 +120,6 @@ void RKHS::initSamples(vecOfvec& xx, vectord& yy)
     }
 }
 
-
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: evaluateRandom                                                                   *
- *  Class      : RKHS                                                                             *
- **************************************************************************************************/
-void RKHS::evaluateRandom(vecOfvec& xx, vectord& yy, uint number, double min, double max)
-{
-    if (max <= min) return;
-
-    // Random number variables
-    RealDistribution real_distribution    (min, max);
-    Generator        real_number_generator(_randEngine, real_distribution);
-
-    // Output variables
-    xx.clear();
-    yy = vectord(number, 0);
-
-    // Fill outputs
-    for(uint index = 0; index < number; index += 1)
-    {
-        double x = real_number_generator();
-
-        xx.push_back(vectord(1, x));
-        yy(index) = evaluate(x);
-    }
-}
 
 /**************************************************************************************************
  *  Procecure                                                                                     *

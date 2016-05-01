@@ -17,12 +17,16 @@
 #include <Window.hpp>
 
 #include <tgpoptimizable.hpp>
-#include <iCubOptimizable.h>
-#include <TGPOptimization.h>
-#include <LogManager.h>
+#include <iCubOptimizable.hpp>
+#include <TGPOptimization.hpp>
+#include <LogManager.hpp>
 #include <criteria/criteria_uei.hpp>
 
 using bayesopt::TGPOptimization;
+using bayesopt::Parameters;
+using bayesopt::TgpParameters;
+using bayesopt::iCubOptimizable;
+
 
 /**************************************************************************************************
  *  Used namespaces                                                                               *
@@ -504,13 +508,13 @@ void ShowWindow::optimizeGrasp(void)
 
 void ShowWindow::optimizeGraspThread(void)
 {
-    bopt_params       opt_param;
-    tgp_parameters    tgp_param;
+    Parameters        opt_param;
+    TgpParameters     tgp_param;
 
     iCubOptParameters icub_param = iCubOptimizable::initDefaultParams();
-                      icub_param.grasp    = slider_mode - 1;
-                      icub_param.position = movehand_mode;
-                      icub_param.object   = target_object -> getName();
+                      icub_param.grasp            = slider_mode - 1;
+                      icub_param.position         = movehand_mode;
+                      icub_param.object           = target_object -> getName();
                       icub_param.default_query    = vectord(7);
 
                       icub_param.default_query[0] = 303.834;
@@ -609,8 +613,8 @@ void ShowWindow::graspMetricTest(void)
 
 void ShowWindow::graspMetricTestThread(void)
 {
-    bopt_params       opt_param;
-    tgp_parameters    tgp_param;
+    Parameters        opt_param;
+    TgpParameters     tgp_param;
 
     iCubOptParameters icub_param = iCubOptimizable::initDefaultParams();
                       icub_param.grasp            = slider_mode - 1;

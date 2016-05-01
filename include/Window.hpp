@@ -42,9 +42,9 @@
 
 #include <learningqueue.hpp>
 
-#include <iCub.h>
-#include <iCubHand.h>
-#include <OrientedBoundingBox.h>
+#include <iCub.hpp>
+#include <iCubHand.hpp>
+#include <OrientedBoundingBox.hpp>
 
 #include <ui_iCubSimulator.h>
 
