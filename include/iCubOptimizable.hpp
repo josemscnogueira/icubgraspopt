@@ -29,23 +29,8 @@
 
 #include <iCub.hpp>
 #include <iCubHand.hpp>
-#include <iCubOptParameters.h>
+#include <iCubOptParameters.hpp>
 
-
-
-/**************************************************************************************************
- *  Enumerations                                                                                  *
- **************************************************************************************************/
-enum
-{
-    TRANS_X   = 0,
-    TRANS_Y   = 1,
-    TRANS_Z   = 2,
-    ROT_ROLL  = 3,
-    ROT_PITCH = 4,
-    ROT_YAW   = 5,
-    FIRST_SIN = 6,
-};
 
 /**************************************************************************************************
  *  Typedefs                                                                                      *
@@ -103,11 +88,6 @@ public:
     void                initSamples           (vecOfvec& xx, vectord& yy) { };
     void                getOptParams          (TgpParameters& tgp_params, Parameters& opt_params);
     void                getBoundingBox        (vectord& lower, vectord& upper);
-
-    // Static Methods
-    static iCubOptParameters initDefaultParams(void);
-    static void              initDefaultParams(iCubOptParameters& params);
-    static void              fillOthers       (iCubOptParameters& icub_params, TgpParameters& tgp_params);
 
 protected:
     // Attributes

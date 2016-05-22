@@ -13,19 +13,12 @@
  **************************************************************************************************/
 #include <string>           // Global
 #include <stdlib.h>
-#include <boost/random.hpp>
+
+#include <json/json.h>
 
 #include <specialtypes.hpp> // Bayesopt
 #include <tgpoptimizable.hpp>
 #include <kernels/kernel_gaussian.hpp>
-
-
-/**************************************************************************************************
- *  Typedefs                                                                                      *
- **************************************************************************************************/
-typedef boost::mt19937                                            RandomEngine;
-typedef boost::uniform_real<>                                     RealDistribution;
-typedef boost::variate_generator<RandomEngine&, RealDistribution> Generator;
 
 
 namespace bayesopt {
@@ -57,6 +50,8 @@ public:
     double evaluate      (vectord         x);
     void   initSamples   (vecOfvec&       xx        , vectord&     yy);
     void   getOptParams  (TgpParameters& tgp_params, Parameters& opt_params);
+
+    void        loadJson(Json::Value config) { }; // Cannot be loaded
 };
 
 } // End of namespace bayesopt

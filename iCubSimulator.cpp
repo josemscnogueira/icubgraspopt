@@ -1,13 +1,15 @@
 //#include "Window.h"
 #include <tgpoptimizable.hpp>
 #include <criteria/criteria_uei.hpp>
+#include <param_loader.hpp>
 #include <TGPOptimization.hpp>
 #include <OptFuncs.hpp>
 #include <RKHS.hpp>
 #include <LogManager.hpp>
+#include <json/json.h>
 
+using bayesopt::utils::ParamLoader;
 using namespace bayesopt;
-
 
 void funcProfile(int argc, char *argv[])
 {
@@ -30,7 +32,7 @@ void funcProfile(int argc, char *argv[])
 void synthBayesOpt(uint index, uint tests)
 {
     vectord         bestpoint, upper, lower;
-    TGPOptimizable* func       = new GramacyExponential();
+    TGPOptimizable* func       = new Martinez();
 
     Parameters     opt_param;
     TgpParameters  tgp_param;
@@ -45,24 +47,85 @@ void synthBayesOpt(uint index, uint tests)
     tgp_param.wheight_power      =    4;
     // tgp_param.samples_to_save    =   15;
 
-    matrixd px = func -> getUncertaintyMatrix(MC_STD); // Must be Normalized for montecarlo sampling
+    matrixd px = func -> getUncertaintyMatrix(0.02); // Must be Normalized for montecarlo sampling
+
     UnscentedExpectedImprovement::convertMatrixToParams(opt_param, px);
 
-    // Get Exploration Bounding Box
-    func -> getBoundingBox(lower, upper);
 
-    if (tests != 1)
+    Json::Value        read_config;
+    Json::Reader       json_parser;
+    Json::StyledWriter json_writer;
+    Json::Value params;
+                params["Parameters"   ] = opt_param.getJson();
+                params["TgpParameters"] = tgp_param.getJson();
+                params["func"         ] = func ->   getJson();
+
+    std::ofstream configs;
+                  configs.open("bayesopt_saved_beforeLoading.json", std::ofstream::out | std::ofstream::trunc);
+                  configs << json_writer.write(params);
+                  configs.close();
+
+    std::ifstream input_config("bayesopt_load.json");
+
+    if (json_parser.parse(input_config, read_config))
     {
-        opt_param.random_seed = 1 + ( (func -> dim * opt_param.n_init_samples) * index);
+        std::cout << "Json Parsing Successful" << std::endl;
+
+        if (read_config["TgpParameters"].isNull() != true)
+        {
+            std::cout << "Loaded TgpParameters" << std::endl;
+            tgp_param.loadJson(read_config["TgpParameters"]);
+        }
+
+
+        if (read_config["Parameters"   ].isNull() != true)
+        {
+            std::cout << "Loaded Parameters" << std::endl;
+            opt_param.loadJson(read_config["Parameters"   ]);
+        }
     }
+    else
+    {
+        std::cout << json_parser.getFormattedErrorMessages();
+    }
+    input_config.close();
 
-    // TGPOptimization*            tgp_opt = new TGPOptimization(tgp_param, opt_param, (*func), LOG_POSTERIOR | CREATE_MATLAB_FIGS, false, index);
-    TGPOptimization*            tgp_opt = new TGPOptimization(tgp_param, opt_param, (*func), LOG_LEARNING  | MONTE_CARLO_OPT, true, index);
-                                tgp_opt -> setBoundingBox (lower, upper);
-                                tgp_opt -> optimize(bestpoint);
-    if (index == (tests - 1))   tgp_opt -> printLogFooter();
+    params.clear();
+    params["Parameters"   ] = opt_param.getJson();
+    params["TgpParameters"] = tgp_param.getJson();
 
-    delete tgp_opt;
+    configs.open("bayesopt_saved_afterLoading.json", std::ofstream::out | std::ofstream::trunc);
+    configs << json_writer.write(params);
+    configs.close();
+
+    std::cout << "noise = " <<                     opt_param.noise  << std::endl;
+    std::cout << "noise = " << Json::valueToString(opt_param.noise) << std::endl;
+    std::cout << "noise = " <<      std::to_string(opt_param.noise) << std::endl;
+
+
+
+
+
+
+
+    // matrixd px = func -> getUncertaintyMatrix(MC_STD); // Must be Normalized for montecarlo sampling
+    // UnscentedExpectedImprovement::convertMatrixToParams(opt_param, px);
+    //
+    // // Get Exploration Bounding Box
+    // func -> getBoundingBox(lower, upper);
+    //
+    // if (tests != 1)
+    // {
+    //     opt_param.random_seed = 1 + ( (func -> dim * opt_param.n_init_samples) * index);
+    // }
+    //
+    // // TGPOptimization*            tgp_opt = new TGPOptimization(tgp_param, opt_param, (*func), LOG_POSTERIOR | CREATE_MATLAB_FIGS, false, index);
+    // TGPOptimization*            tgp_opt = new TGPOptimization(tgp_param, opt_param, (*func), LOG_LEARNING  | MONTE_CARLO_OPT, true, index);
+    //                             tgp_opt -> setBoundingBox (lower, upper);
+    //                             tgp_opt -> optimize(bestpoint);
+    // if (index == (tests - 1))   tgp_opt -> printLogFooter();
+    //
+    // delete tgp_opt;
 }
 
 

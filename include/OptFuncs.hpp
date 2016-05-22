@@ -56,6 +56,7 @@ public:
     };
 
     void initSamples(vecOfvec& xx, vectord& yy) { };
+    void loadJson   (Json::Value config)        { }; // Cannot be loaded
 
 private:
     double sqr(double x) {return x*x;};
@@ -100,6 +101,7 @@ public:
     };
 
     void initSamples(vecOfvec& xx, vectord& yy) { };
+    void loadJson   (Json::Value config)        { }; // Cannot be loaded
 
 protected:
     double sqr(double x) {return x*x;};
@@ -141,6 +143,7 @@ public:
     };
 
     void initSamples(vecOfvec& xx, vectord& yy) { };
+    void loadJson   (Json::Value config)        { }; // Cannot be loaded
 };
 
 
@@ -188,6 +191,7 @@ public:
     };
 
     void initSamples(vecOfvec& xx, vectord& yy) { };
+    void loadJson   (Json::Value config)        { }; // Cannot be loaded
 };
 
 /**************************************************************************************************
@@ -239,6 +243,7 @@ public:
     };
 
     void initSamples(vecOfvec& xx, vectord& yy) { };
+    void loadJson   (Json::Value config)        { }; // Cannot be loaded
 };
 
 
@@ -292,6 +297,7 @@ public:
     };
 
     void initSamples(vecOfvec& xx, vectord& yy) { };
+    void loadJson   (Json::Value config)        { }; // Cannot be loaded
 };
 
 /**************************************************************************************************
@@ -323,7 +329,11 @@ public:
     };
 
     void initSamples(vecOfvec& xx, vectord& yy) { };
+    void loadJson   (Json::Value config)        { }; // Cannot be loaded
 };
+
+
+
 
 }
 

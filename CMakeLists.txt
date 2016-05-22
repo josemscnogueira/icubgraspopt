@@ -26,7 +26,7 @@ IF(Simox_USE_COIN_VISUALIZATION)
                  ${PROJECT_SOURCE_DIR}/include/RKHS.hpp
                  ${PROJECT_SOURCE_DIR}/include/TGPOptimization.hpp
                  ${PROJECT_SOURCE_DIR}/include/iCub.hpp
-                 ${PROJECT_SOURCE_DIR}/include/iCubOptParameters.h                 
+                 ${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp
                  ${PROJECT_SOURCE_DIR}/include/iCubHand.hpp
                  ${PROJECT_SOURCE_DIR}/include/ApproachMovementSpace.hpp
                  ${PROJECT_SOURCE_DIR}/include/OrientedBoundingBox.hpp
@@ -48,4 +48,4 @@ if (OPENMP_FOUND)
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 ENDIF()
 
-target_link_libraries(myDemo libbayesopt.a libnlopt.a ${PYTHON_LIBRARIES})
+target_link_libraries(myDemo libbayesopt.a libnlopt.a libjsoncpp.a ${PYTHON_LIBRARIES})
