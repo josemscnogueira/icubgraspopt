@@ -29,8 +29,8 @@ public:
     OptimizablesManager(void) { };
 
     // Static methods
-    static TGPOptimizablePtr  getOptimizable    (Json::Value config);
-    static TGPOptimizablePtr  getOptimizable    (std::string name  );
+    static TGPOptimizablePtr  getOptimizable(Json::Value config);
+    static TGPOptimizablePtr  getOptimizable(std::string name  );
 };
 
 } // End of namespace bayesopt

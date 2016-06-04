@@ -17,6 +17,7 @@
 #include <Window.hpp>
 
 #include <tgpoptimizable.hpp>
+#include <iCubOptParameters.hpp>
 #include <iCubOptimizable.hpp>
 #include <TGPOptimization.hpp>
 #include <LogManager.hpp>
@@ -26,6 +27,7 @@ using bayesopt::TGPOptimization;
 using bayesopt::Parameters;
 using bayesopt::TgpParameters;
 using bayesopt::iCubOptimizable;
+using bayesopt::iCubOptParameters;
 
 
 /**************************************************************************************************
@@ -511,7 +513,7 @@ void ShowWindow::optimizeGraspThread(void)
     Parameters        opt_param;
     TgpParameters     tgp_param;
 
-    iCubOptParameters icub_param = iCubOptimizable::initDefaultParams();
+    iCubOptParameters icub_param;
                       icub_param.grasp            = slider_mode - 1;
                       icub_param.position         = movehand_mode;
                       icub_param.object           = target_object -> getName();
@@ -539,7 +541,6 @@ void ShowWindow::optimizeGraspThread(void)
 
     // Fill optimization parameters
     func -> getOptParams(tgp_param , opt_param);
-    func -> fillOthers  (icub_param, tgp_param);
 
     // Get Uncertainty Matrix for Unscented Expected Improvement
     matrixd px = func -> getUncertaintyMatrix(MC_STD); // Must be Normalized for montecarlo sampling
@@ -616,7 +617,7 @@ void ShowWindow::graspMetricTestThread(void)
     Parameters        opt_param;
     TgpParameters     tgp_param;
 
-    iCubOptParameters icub_param = iCubOptimizable::initDefaultParams();
+    iCubOptParameters icub_param;
                       icub_param.grasp            = slider_mode - 1;
                       icub_param.position         = movehand_mode;
                       icub_param.object           = target_object -> getName();
@@ -640,7 +641,6 @@ void ShowWindow::graspMetricTestThread(void)
 
     // Fill optimization parameters
     func -> getOptParams(tgp_param , opt_param);
-    func -> fillOthers  (icub_param, tgp_param);
 
     // Get Uncertainty Matrix for Unscented Expected Improvement
     matrixd px = func -> getUncertaintyMatrix(MC_STD); // Must be Normalized for montecarlo sampling
@@ -1060,7 +1060,7 @@ void ShowWindow::selectGraspOpt(int pos)
 {
     if (pos < (int)best_results.size())
     {
-        iCubOptParameters icub_param = iCubOptimizable::initDefaultParams();
+        iCubOptParameters icub_param;
                           icub_param.grasp    = slider_mode - 1;
                           icub_param.position = movehand_mode;
 

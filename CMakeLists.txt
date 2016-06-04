@@ -18,6 +18,7 @@ IF(Simox_USE_COIN_VISUALIZATION)
                  ${PROJECT_SOURCE_DIR}/src/iCubHand.cpp
                  ${PROJECT_SOURCE_DIR}/src/ApproachMovementSpace.cpp
                  ${PROJECT_SOURCE_DIR}/src/OrientedBoundingBox.cpp
+                 ${PROJECT_SOURCE_DIR}/src/iCubOptParameters.cpp
                  ${PROJECT_SOURCE_DIR}/src/iCubOptimizable.cpp
                  ${PROJECT_SOURCE_DIR}/src/Window.cpp)
 
