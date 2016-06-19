@@ -18,7 +18,7 @@
 
 #include <specialtypes.hpp> // Bayesopt
 #include <tgpoptimizable.hpp>
-#include <kernels/kernel_gaussian.hpp>
+// #include <kernels/kernel_gaussian.hpp>
 
 
 namespace bayesopt {
@@ -36,7 +36,7 @@ private:
     vectord _hyp_1;
     vectord _hyp_2;
 
-    SEArd   kernel;
+    // SEArd   kernel;
 
 public:
     // Constructor
@@ -51,7 +51,7 @@ public:
     void   initSamples   (vecOfvec&       xx        , vectord&     yy);
     void   getOptParams  (TgpParameters& tgp_params, Parameters& opt_params);
 
-    void        loadJson(Json::Value config) { }; // Cannot be loaded
+    void   loadJson(Json::Value config) { }; // Cannot be loaded
 };
 
 } // End of namespace bayesopt

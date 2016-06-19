@@ -424,4 +424,21 @@ double TGPOptimization::getUnscentedOptimumStd(const vectord x)
     return getUnscentedOptimumStd(xx, w);
 }
 
+/**
+ *
+ */
+void TGPOptimization::copyJsonConfig(void)
+{
+    Json::Value config;
+
+    config["TGPOptimizable"] = _func.getJson();
+    config["Parameters"    ] = mParameters.getJson();
+    config["TgpParameters" ] = _tgpparams.getJson();
+    config["LogMode"       ] = Json::Value(LogManager::logmodeToString(_printmode));
+    config["useTGP"]         = Json::Value(_isTGP);
+
+    // TODO make filepath dynamic
+    LogManager::createJsonConfigFile(config, "settings/final_opt_cfg.json");
+}
+
 } // End namespace bayesopt

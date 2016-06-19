@@ -13,6 +13,7 @@ IF(Simox_USE_COIN_VISUALIZATION)
                  ${PROJECT_SOURCE_DIR}/src/OptFuncs.cpp
                  ${PROJECT_SOURCE_DIR}/src/LogManager.cpp
                  ${PROJECT_SOURCE_DIR}/src/RKHS.cpp
+                 ${PROJECT_SOURCE_DIR}/src/OptimizablesManager.cpp
                  ${PROJECT_SOURCE_DIR}/src/TGPOptimization.cpp
                  ${PROJECT_SOURCE_DIR}/src/iCub.cpp
                  ${PROJECT_SOURCE_DIR}/src/iCubHand.cpp
@@ -25,6 +26,7 @@ IF(Simox_USE_COIN_VISUALIZATION)
   FILE(GLOB INCS ${PROJECT_SOURCE_DIR}/include/OptFuncs.hpp
                  ${PROJECT_SOURCE_DIR}/include/LogManager.hpp
                  ${PROJECT_SOURCE_DIR}/include/RKHS.hpp
+                 ${PROJECT_SOURCE_DIR}/include/OptimizablesManager.hpp
                  ${PROJECT_SOURCE_DIR}/include/TGPOptimization.hpp
                  ${PROJECT_SOURCE_DIR}/include/iCub.hpp
                  ${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp

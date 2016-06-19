@@ -16,23 +16,15 @@
 
 namespace bayesopt
 {
+    typedef boost::shared_ptr<TGPOptimizable> TGPOptimizablePtr;
 
-/**************************************************************************************************
- *  Class: OptimizablesManager                                                                    *
- **************************************************************************************************/
-class OptimizablesManager
-{
-public:
-    typedef boost::shared_ptr<TGPOptimizable > TGPOptimizablePtr;
+    namespace TGPOptimizableUtils
+    {
+        TGPOptimizablePtr  getOptimizable(Json::Value config);
+        TGPOptimizablePtr  getOptimizable(std::string name  );
+        TGPOptimizablePtr  getOptimizable(const char* name);
 
-    // Constructor
-    OptimizablesManager(void) { };
-
-    // Static methods
-    static TGPOptimizablePtr  getOptimizable(Json::Value config);
-    static TGPOptimizablePtr  getOptimizable(std::string name  );
-};
-
+    } // End of namespace TGPOptimizableUtils
 } // End of namespace bayesopt
 
 

@@ -16,6 +16,10 @@
 
 namespace bayesopt
 {
+
+namespace TGPOptimizableUtils
+{
+
 /**
  * Retrieves a pointer for TGPOptimizable from a Json::Value
  * Allocs a pointer
@@ -24,7 +28,7 @@ namespace bayesopt
  * @return        TGPOptimizable pointer
  *                NULL pointer if name is invalid
  */
-OptimizablesManager::TGPOptimizablePtr OptimizablesManager::getOptimizable(Json::Value config)
+TGPOptimizablePtr getOptimizable(Json::Value config)
 {
     if (config["name"].isNull() != true)
     {
@@ -32,7 +36,7 @@ OptimizablesManager::TGPOptimizablePtr OptimizablesManager::getOptimizable(Json:
     }
     else
     {
-        std::cout << std::endl << "Error: OptimizablesManager::getOptimizable Json Value is incorrect";
+        std::cout << std::endl << "Error: TGPOptimizableUtils::getOptimizable Json Value is incorrect";
 
         return TGPOptimizablePtr();
     }
@@ -47,7 +51,7 @@ OptimizablesManager::TGPOptimizablePtr OptimizablesManager::getOptimizable(Json:
  * @return        TGPOptimizable pointer
  *                NULL pointer if name is invalid
  */
-OptimizablesManager::TGPOptimizablePtr OptimizablesManager::getOptimizable(std::string name)
+TGPOptimizablePtr getOptimizable(std::string name)
 {
     if ( (name.compare("RKHS") == 0) || (name.compare("RKHS_1D") == 0) )
     {
@@ -63,11 +67,26 @@ OptimizablesManager::TGPOptimizablePtr OptimizablesManager::getOptimizable(std::
     }
     else
     {
-        std::cout << std::endl << "Error: OptimizablesManager::getOptimizable couldn't load" << name;
+        std::cout << std::endl << "Error: TGPOptimizableUtils::getOptimizable couldn't load" << name;
     }
 
     // else everything
     return TGPOptimizablePtr();
 }
 
+/**
+ * Retrieves a pointer for TGPOptimizable from a Json::Value
+ * Allocs a pointer
+ *
+ * @param  config Json config
+ * @return        TGPOptimizable pointer
+ *                NULL pointer if name is invalid
+ */
+TGPOptimizablePtr getOptimizable(const char* name)
+{
+    // else everything
+    return getOptimizable(std::string(name));
+}
+
+} // End of namespace TGPOptimizableUtils
 } // End of namespace bayesopt

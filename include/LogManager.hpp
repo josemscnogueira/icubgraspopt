@@ -77,11 +77,18 @@ public:
                                             bayesopt::Parameters      opt_params,
                                             bayesopt::TGPOptimizable& func);
 
+    static Json::Value readJsonConfig      (std::string               config_path);
+    static void        createJsonConfigFile(Json::Value               config,
+                                            std::string               config_path);
+
+    static std::string logmodeToString     (uint                      logmode);
+    static uint        stringToLogmode     (std::string               logmode);
+
 private:
     // File system Attributes
-    boost::filesystem::path  _path_binary;
-    boost::filesystem::path  _path_folder;
-    std::ofstream            _output;
+    boost::filesystem::path    _path_binary;
+    boost::filesystem::path    _path_folder;
+    std::ofstream              _output;
 
     // Optimization References
     bayesopt::Parameters*      _opt_params;

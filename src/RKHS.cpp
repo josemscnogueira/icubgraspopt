@@ -49,7 +49,7 @@ RKHS::RKHS(void)
     std::copy(a_vals_2   .begin(), a_vals_2   .end(), _vals_2   .begin());
 
     // Initialize Gaussian Kernels
-    kernel.init(dim);
+    // kernel.init(dim);
     _hyp_1 = vectord(1, 0.10);
     _hyp_2 = vectord(1, 0.01);
 }
@@ -63,9 +63,11 @@ RKHS::RKHS(void)
  **************************************************************************************************/
  double RKHS::covSEard(const vectord& hyp, const vectord& x1, const vectord& x2)
  {
-     kernel.setHyperParameters(hyp);
+     // kernel.setHyperParameters(hyp);
 
-     return ( boost::numeric::ublas::norm_2(hyp) * boost::numeric::ublas::norm_2(hyp) * kernel(x1, x2));
+     // return ( boost::numeric::ublas::norm_2(hyp) * boost::numeric::ublas::norm_2(hyp) * kernel(x1, x2));
+     //
+     return -1;
  }
 
 
@@ -81,6 +83,8 @@ double RKHS::evaluate(vectord x)
     assert(x.size() == 1);
 
     double result = 0.0;
+
+    std::cout << std::endl << _hyp_2 << std::endl; exit(-1);
 
     // First kernel length
     for (uint index = 0; index < _support_2.size(); ++index)

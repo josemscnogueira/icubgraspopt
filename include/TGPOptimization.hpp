@@ -49,6 +49,7 @@ public:
     double               evaluateSample        (const vectord& query);
     bool                 checkReachability     (const vectord& query);
     void                 printLogFooter        (void) { _log -> printLogFooter(mCurrentIter); };
+    void                 copyJsonConfig        (void);
     LearningQueueWrapper getBestResults        (void);
 
     uint                 getOptimumIndex       (uint maximum_index);
