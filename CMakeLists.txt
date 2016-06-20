@@ -14,30 +14,31 @@ IF(Simox_USE_COIN_VISUALIZATION)
                  ${PROJECT_SOURCE_DIR}/src/LogManager.cpp
                  ${PROJECT_SOURCE_DIR}/src/RKHS.cpp
                  ${PROJECT_SOURCE_DIR}/src/OptimizablesManager.cpp
-                 ${PROJECT_SOURCE_DIR}/src/TGPOptimization.cpp
-                 ${PROJECT_SOURCE_DIR}/src/iCub.cpp
-                 ${PROJECT_SOURCE_DIR}/src/iCubHand.cpp
-                 ${PROJECT_SOURCE_DIR}/src/ApproachMovementSpace.cpp
-                 ${PROJECT_SOURCE_DIR}/src/OrientedBoundingBox.cpp
-                 ${PROJECT_SOURCE_DIR}/src/iCubOptParameters.cpp
-                 ${PROJECT_SOURCE_DIR}/src/iCubOptimizable.cpp
-                 ${PROJECT_SOURCE_DIR}/src/Window.cpp)
+                 ${PROJECT_SOURCE_DIR}/src/TGPOptimization.cpp)
+                 #${PROJECT_SOURCE_DIR}/src/iCub.cpp
+                 #${PROJECT_SOURCE_DIR}/src/iCubHand.cpp
+                 #${PROJECT_SOURCE_DIR}/src/ApproachMovementSpace.cpp
+                 #${PROJECT_SOURCE_DIR}/src/OrientedBoundingBox.cpp
+                 #${PROJECT_SOURCE_DIR}/src/iCubOptParameters.cpp
+                 #${PROJECT_SOURCE_DIR}/src/iCubOptimizable.cpp
+                 #${PROJECT_SOURCE_DIR}/src/Window.cpp)
 
   FILE(GLOB INCS ${PROJECT_SOURCE_DIR}/include/OptFuncs.hpp
                  ${PROJECT_SOURCE_DIR}/include/LogManager.hpp
                  ${PROJECT_SOURCE_DIR}/include/RKHS.hpp
                  ${PROJECT_SOURCE_DIR}/include/OptimizablesManager.hpp
-                 ${PROJECT_SOURCE_DIR}/include/TGPOptimization.hpp
-                 ${PROJECT_SOURCE_DIR}/include/iCub.hpp
-                 ${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp
-                 ${PROJECT_SOURCE_DIR}/include/iCubHand.hpp
-                 ${PROJECT_SOURCE_DIR}/include/ApproachMovementSpace.hpp
-                 ${PROJECT_SOURCE_DIR}/include/OrientedBoundingBox.hpp
-                 ${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp
-                 ${PROJECT_SOURCE_DIR}/include/iCubOptimizable.hpp
-                 ${PROJECT_SOURCE_DIR}/include/Window.hpp)
+                 ${PROJECT_SOURCE_DIR}/include/TGPOptimization.hpp)
+                 #${PROJECT_SOURCE_DIR}/include/iCub.hpp
+                 #${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp
+                 #${PROJECT_SOURCE_DIR}/include/iCubHand.hpp
+                 #${PROJECT_SOURCE_DIR}/include/ApproachMovementSpace.hpp
+                 #${PROJECT_SOURCE_DIR}/include/OrientedBoundingBox.hpp
+                 #${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp
+                 #${PROJECT_SOURCE_DIR}/include/iCubOptimizable.hpp
+                 #${PROJECT_SOURCE_DIR}/include/Window.hpp)
 
-  set(GUI_MOC_HDRS ${PROJECT_SOURCE_DIR}/include/Window.hpp)
+  set(GUI_MOC_HDRS )
+  #set(GUI_MOC_HDRS ${PROJECT_SOURCE_DIR}/include/Window.hpp)
   set(GUI_UIS ${PROJECT_SOURCE_DIR}/ui/iCubSimulator.ui)
   set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -lpthread -Wno-unused-local-typedefs")
 
