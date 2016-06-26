@@ -9,23 +9,20 @@
   *  Include Files                                                                                 *
   **************************************************************************************************/
 #include <LogManager.hpp>
-#include <chrono>
-#include <random>
+#include <ctime>
 #include <numeric>
 #include <boost/lexical_cast.hpp>
+#include <boost/random.hpp>
 #include <boost/algorithm/string.hpp>
 #include <learningqueue.hpp>
 #include <treedgaussianprocess.hpp>
 
 using namespace bayesopt;
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: Constructor                                                                      *
- *  Class      : LogManager                                                                       *
- **************************************************************************************************/
-LogManager::LogManager(void)
+/**
+ * Init Function for Constructor overloading
+ */
+void LogManager::init(void)
 {
     _path_binary =                boost::filesystem::current_path();
     _path_folder = _path_binary / boost::filesystem::path("results");
@@ -39,15 +36,10 @@ LogManager::LogManager(void)
     if (!boost::filesystem::exists(_path_folder)) boost::filesystem::create_directory(_path_folder);
 }
 
-
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: Constructor                                                                      *
- *  Class      : LogManager                                                                       *
- **************************************************************************************************/
-LogManager::LogManager(uint type) : LogManager()
+void LogManager::init(uint type)
 {
+    init();
+
     _mode = type & 0b1111111100000000;
     _type = type & 0b0000000011111111;
 
@@ -64,14 +56,58 @@ LogManager::LogManager(uint type) : LogManager()
 }
 
 
+void LogManager::init(TGPOptimizable& func)
+{
+    init(LOG_OBJ_FUNCTION);
+
+    std::string dir_name = func.name + "_" + boost::lexical_cast<std::string>(func.dim) + "D";
+
+    _func       = &func;
+
+    // Update Directory Path
+    _path_folder /= boost::filesystem::path(dir_name.c_str());
+
+    // If directory doens't exist, create it
+    if (!boost::filesystem::exists(_path_folder)) boost::filesystem::create_directory(_path_folder);
+}
+
+
 /**************************************************************************************************
  *  Procecure                                                                                     *
  *                                                                                                *
  *  Description: Constructor                                                                      *
  *  Class      : LogManager                                                                       *
  **************************************************************************************************/
-LogManager::LogManager(uint type, std::string dir_name) : LogManager(type)
+LogManager::LogManager(void)
 {
+    init();
+}
+
+
+/**************************************************************************************************
+ *  Procecure                                                                                     *
+ *                                                                                                *
+ *  Description: Constructor                                                                      *
+ *  Class      : LogManager                                                                       *
+ **************************************************************************************************/
+LogManager::LogManager(uint type)
+{
+    init(type);
+}
+
+
+
+
+/**************************************************************************************************
+ *  Procecure                                                                                     *
+ *                                                                                                *
+ *  Description: Constructor                                                                      *
+ *  Class      : LogManager                                                                       *
+ **************************************************************************************************/
+LogManager::LogManager(uint type, std::string dir_name)
+{
+    init(type);
+
     // Update File Path
     _path_folder /= boost::filesystem::path(dir_name.c_str());
 
@@ -85,8 +121,10 @@ LogManager::LogManager(uint type, std::string dir_name) : LogManager(type)
  *  Description: Constructor                                                                      *
  *  Class      : LogManager                                                                       *
  **************************************************************************************************/
-LogManager::LogManager(uint type, bool& isTGP, TgpParameters& tgp_params, Parameters& opt_params, TGPOptimizable& func) : LogManager(type)
+LogManager::LogManager(uint type, bool& isTGP, TgpParameters& tgp_params, Parameters& opt_params, TGPOptimizable& func)
 {
+    init(type);
+
     std::string dir_name = optimizationToString(isTGP, tgp_params, opt_params, func);
 
     _opt_params = &opt_params;
@@ -108,17 +146,9 @@ LogManager::LogManager(uint type, bool& isTGP, TgpParameters& tgp_params, Parame
  *  Description: Constructor                                                                      *
  *  Class      : LogManager                                                                       *
  **************************************************************************************************/
-LogManager::LogManager(TGPOptimizable& func) : LogManager(LOG_OBJ_FUNCTION)
+LogManager::LogManager(TGPOptimizable& func)
 {
-    std::string dir_name = func.name + "_" + boost::lexical_cast<std::string>(func.dim) + "D";
-
-    _func       = &func;
-
-    // Update Directory Path
-    _path_folder /= boost::filesystem::path(dir_name.c_str());
-
-    // If directory doens't exist, create it
-    if (!boost::filesystem::exists(_path_folder)) boost::filesystem::create_directory(_path_folder);
+    init(func);
 }
 
 
@@ -128,8 +158,10 @@ LogManager::LogManager(TGPOptimizable& func) : LogManager(LOG_OBJ_FUNCTION)
  *  Description: Constructor                                                                      *
  *  Class      : LogManager                                                                       *
  **************************************************************************************************/
-LogManager::LogManager(TGPOptimizable& func, TgpParameters& tgp_params) : LogManager(func)
+LogManager::LogManager(TGPOptimizable& func, TgpParameters& tgp_params)
 {
+    init(func);
+
     _tgp_params = &tgp_params;
 }
 
@@ -1288,16 +1320,16 @@ void LogManager::getMonteCarloPoints(uint points, const vectord query, double st
 void LogManager::getMonteCarloPoints(uint points, const vectord query, std::vector<double> std_dev, std::vector<vectord>& xx, std::vector<double>& yy)
 {
     // Create Normal distribution
-    std::vector<std::normal_distribution<double> > noise_distribution;
-    unsigned                                       rand_seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine                     generator(rand_seed);
-    vectord                                        query_normalzized = query;
+    std::vector<boost::normal_distribution<double> > noise_distribution;
+    boost::mt19937                                   generator;
+                                                     generator.seed(std::time(0));
+    vectord                                          query_normalzized = query;
                           _func -> normalizeVector(query_normalzized);
 
     // Update noise distribution according to std_dev
     for(uint index = 0; index < query.size(); index += 1)
     {
-        std::normal_distribution<double> distribution( query_normalzized[index], std_dev[index]);
+        boost::normal_distribution<double> distribution( query_normalzized[index], std_dev[index]);
 
         noise_distribution.push_back(distribution);
     }
@@ -1351,9 +1383,9 @@ std::string LogManager::optimizationToString(bool isTGP, TgpParameters tgp_param
     {
         uint wheight_threshold = (tgp_params.wheight_threshold * 100);
 
-        s += "_w"   + std::to_string((uint)tgp_params.wheight_power    );
-        s += "_l"   + std::to_string((uint)tgp_params.min_data_per_leaf);
-        s += "_t"   + std::to_string((uint)wheight_threshold           );
+        s += "_w"   + boost::lexical_cast<std::string>((uint)tgp_params.wheight_power    );
+        s += "_l"   + boost::lexical_cast<std::string>((uint)tgp_params.min_data_per_leaf);
+        s += "_t"   + boost::lexical_cast<std::string>((uint)wheight_threshold           );
     }
 
     return s;
@@ -1368,7 +1400,7 @@ std::string LogManager::optimizationToString(bool isTGP, TgpParameters tgp_param
  */
 Json::Value LogManager::readJsonConfig(std::string config_path)
 {
-    std::ifstream input_config(config_path);
+    std::ifstream input_config(config_path.c_str());
     Json::Reader  json_parser;
     Json::Value   read_config;
 
@@ -1425,7 +1457,7 @@ void LogManager::createJsonConfigFile(Json::Value config, std::string config_pat
     if (!fs::exists(folder_path)) fs::create_directory(folder_path);
 
     // Write config to file
-    config_file.open(config_path, std::ofstream::out | std::ofstream::trunc);
+    config_file.open(config_path.c_str(), std::ofstream::out | std::ofstream::trunc);
     config_file << json_writer.write(config);
     config_file.close();
 }

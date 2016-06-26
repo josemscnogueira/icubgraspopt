@@ -15,10 +15,10 @@
 namespace bayesopt {
 
 
-const std::vector<double> a_support_1 = {0.1, 0.15, 0.08, 0.3, 0.4};
-const std::vector<double> a_support_2 = {0.8, 0.85, 0.9, 0.95, 0.92, 0.74, 0.91, 0.89, 0.79, 0.88, 0.86, 0.96, 0.99, 0.82};
-const std::vector<double> a_vals_1    = {4, -1, 2., -2., 1.};
-const std::vector<double> a_vals_2    = {3, 4, 2, 1, -1, 2, 2, 3, 3, 2., -1., -2., 4., -3.};
+// const std::vector<double> a_support_1 = {0.1, 0.15, 0.08, 0.3, 0.4};
+// const std::vector<double> a_support_2 = {0.8, 0.85, 0.9, 0.95, 0.92, 0.74, 0.91, 0.89, 0.79, 0.88, 0.86, 0.96, 0.99, 0.82};
+// const std::vector<double> a_vals_1    = {4, -1, 2., -2., 1.};
+// const std::vector<double> a_vals_2    = {3, 4, 2, 1, -1, 2, 2, 3, 3, 2., -1., -2., 4., -3.};
 
 /**************************************************************************************************
  *  Procecure                                                                                     *

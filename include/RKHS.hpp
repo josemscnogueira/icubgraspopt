@@ -29,12 +29,17 @@ namespace bayesopt {
 class RKHS : public TGPOptimizable
 {
 private:
-    vectord _support_1;
-    vectord _support_2;
-    vectord _vals_1;
-    vectord _vals_2;
-    vectord _hyp_1;
-    vectord _hyp_2;
+    vectord             _support_1;
+    vectord             _support_2;
+    vectord             _vals_1;
+    vectord             _vals_2;
+    vectord             _hyp_1;
+    vectord             _hyp_2;
+
+    std::vector<double> a_support_1;
+    std::vector<double> a_support_2;
+    std::vector<double> a_vals_1;
+    std::vector<double> a_vals_2;
 
     // SEArd   kernel;
 

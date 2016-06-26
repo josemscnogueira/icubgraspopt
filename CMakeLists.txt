@@ -40,7 +40,7 @@ IF(Simox_USE_COIN_VISUALIZATION)
   set(GUI_MOC_HDRS )
   #set(GUI_MOC_HDRS ${PROJECT_SOURCE_DIR}/include/Window.hpp)
   set(GUI_UIS ${PROJECT_SOURCE_DIR}/ui/iCubSimulator.ui)
-  set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -lpthread -Wno-unused-local-typedefs")
+  set(CMAKE_CXX_FLAGS "-Wall -lpthread -Wno-unused-local-typedefs")
 
   SimoxQtApplication(${PROJECT_NAME} "${SRCS}" "${INCS}" "${GUI_MOC_HDRS}" "${GUI_UIS}")
 ENDIF()

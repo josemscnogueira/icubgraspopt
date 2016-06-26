@@ -99,6 +99,11 @@ private:
     uint             _type;
     uint             _mode;
 
+    // Constructor helpers
+    void init(void                          );
+    void init(uint                      type);
+    void init(bayesopt::TGPOptimizable& func);
+
     // Methods
     bool checkInit          (void);
     void callMatlab         (uint iteration);

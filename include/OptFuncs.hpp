@@ -255,14 +255,15 @@ class Michalewicz : public TGPOptimizable
 {
 private:
     // Attributes
-    double _exp = 10;
+    double _exp;
 
 
 public:
     // Constructor
     Michalewicz(size_t dim) { name = std::string("Michalewicz"); ymax = 1; ymin = -1; this -> dim = dim;
                                                                  lower_bound = vectord(dim, 0);
-                                                                 upper_bound = vectord(dim, 1);         };
+                                                                 upper_bound = vectord(dim, 1);
+                                                                 _exp = 10;                             };
 
     // Methods
     double evaluate(vectord x)
