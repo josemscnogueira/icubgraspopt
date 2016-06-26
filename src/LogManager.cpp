@@ -218,6 +218,39 @@ void LogManager::printLogHeader(void)
         // Open file
         _output.open(filename.c_str(), std::ofstream::out | std::ofstream::trunc);
 
+        // Write to file
+        _output << "clear;"                                                        << std::endl;
+        _output << "logtype            = 'Learning Toolbox';"                     << std::endl;
+
+        if ((*_isTGP)) _output << "surrogate          = 'tgp';"                      << std::endl;
+        else           _output << "surrogate          = 'gp';"                       << std::endl;
+
+        _output << "optimizable        = '" << _func -> name                      << "';" << std::endl;
+        _output << "max_iter           = "  << _opt_params -> n_iterations        <<  ";" << std::endl;
+        _output << "rand_iter          = "  << _opt_params -> n_init_samples      <<  ";" << std::endl;
+        _output << "learning_criteria  = '" << _opt_params -> crit_name           << "';" << std::endl;
+        _output << "dims               = "  << _func -> dim                       <<  ";" << std::endl;
+        _output << "sigma_s            = "  << _opt_params -> sigma_s             <<  ";" << std::endl;
+        _output << "epsilon            = "  << _opt_params -> epsilon             <<  ";" << std::endl;
+        _output << "force_jump         = "  << _opt_params -> force_jump          <<  ";" << std::endl;
+        _output << "noise              = "  << _opt_params -> noise               <<  ";" << std::endl << std::endl;
+
+        if ((*_isTGP))
+        {
+            _output << "mcmc_particles     = " << _tgp_params -> mcmc_particles    <<  ";" << std::endl;
+            _output << "min_data_per_leaf  = " << _tgp_params -> min_data_per_leaf <<  ";" << std::endl;
+            _output << "wheight_power      = " << _tgp_params -> wheight_power     <<  ";" << std::endl;
+            _output << "wheight_threshold  = " << _tgp_params -> wheight_threshold <<  ";" << std::endl << std::endl;
+        }
+
+        if (_tgp_params -> others.size() > 0)
+        {
+            for (uint index = 0; index < _tgp_params -> others.size(); index += 1)
+            {
+                _output << _tgp_params -> others[index] << ";" << std::endl;
+            }
+        }
+
         _output << std::endl;
 
         // Close file
@@ -234,6 +267,43 @@ void LogManager::printLogHeader(void)
         // Open file
         _output.open(filename.c_str(), std::ofstream::out | std::ofstream::trunc);
 
+        // Write to file
+        _output << "clear;"                                                        << std::endl;
+        _output << "logtype            = 'Learning Toolbox MC';"                    << std::endl;
+
+        if ((*_isTGP)) _output << "surrogate          = 'tgp';"                      << std::endl;
+        else           _output << "surrogate          = 'gp';"                       << std::endl;
+
+        _output << "optimizable        = '" << _func -> name                   << "';" << std::endl;
+        _output << "max_iter           = "  << _opt_params -> n_iterations        <<  ";" << std::endl;
+        _output << "rand_iter          = "  << _opt_params -> n_init_samples      <<  ";" << std::endl;
+        _output << "learning_criteria  = '" << _opt_params -> crit_name           << "';" << std::endl;
+        _output << "dims               = "  << _func -> dim                       <<  ";" << std::endl;
+        _output << "sigma_s            = "  << _opt_params -> sigma_s             <<  ";" << std::endl;
+        _output << "epsilon            = "  << _opt_params -> epsilon             <<  ";" << std::endl;
+        _output << "force_jump         = "  << _opt_params -> force_jump          <<  ";" << std::endl;
+        _output << "noise              = "  << _opt_params -> noise               <<  ";" << std::endl << std::endl;
+
+        if ((*_isTGP))
+        {
+            _output << "mcmc_particles     = " << _tgp_params -> mcmc_particles    <<  ";" << std::endl;
+            _output << "min_data_per_leaf  = " << _tgp_params -> min_data_per_leaf <<  ";" << std::endl;
+            _output << "wheight_power      = " << _tgp_params -> wheight_power     <<  ";" << std::endl;
+            _output << "wheight_threshold  = " << _tgp_params -> wheight_threshold <<  ";" << std::endl << std::endl;
+        }
+
+        if (_tgp_params -> others.size() > 0)
+        {
+            for (uint index = 0; index < _tgp_params -> others.size(); index += 1)
+            {
+                _output << _tgp_params -> others[index] << ";" << std::endl;
+            }
+        }
+
+        _output << std::endl;
+
+        _output << "mc_pts             = " << MC_PTS << ";" << std::endl;
+        _output << "mc_std             = " << MC_STD << ";" << std::endl;
         _output << "column_headers     = ['Iteration', 'Optimum Iteration', 'y(iteration)', 'ymean_{mc}(iteration)', 'ystd_{mc}(iteration)', 'yworst_{mc}(iteration)'];";
         _output << std::endl << std::endl;
 
@@ -251,6 +321,43 @@ void LogManager::printLogHeader(void)
         // Open file
         _output.open(filename.c_str(), std::ofstream::out | std::ofstream::trunc);
 
+        // Write to file
+        _output << "clear;"                                                        << std::endl;
+        _output << "logtype            = 'Learning Toolbox Unscented';"            << std::endl;
+
+        if ((*_isTGP)) _output << "surrogate          = 'tgp';"                      << std::endl;
+        else           _output << "surrogate          = 'gp';"                       << std::endl;
+
+        _output << "optimizable        = '" << _func -> name                   << "';" << std::endl;
+        _output << "max_iter           = "  << _opt_params -> n_iterations        <<  ";" << std::endl;
+        _output << "rand_iter          = "  << _opt_params -> n_init_samples      <<  ";" << std::endl;
+        _output << "learning_criteria  = '" << _opt_params -> crit_name           << "';" << std::endl;
+        _output << "dims               = "  << _func -> dim                       <<  ";" << std::endl;
+        _output << "sigma_s            = "  << _opt_params -> sigma_s             <<  ";" << std::endl;
+        _output << "epsilon            = "  << _opt_params -> epsilon             <<  ";" << std::endl;
+        _output << "force_jump         = "  << _opt_params -> force_jump          <<  ";" << std::endl;
+        _output << "noise              = "  << _opt_params -> noise               <<  ";" << std::endl << std::endl;
+
+        if ((*_isTGP))
+        {
+            _output << "mcmc_particles     = " << _tgp_params -> mcmc_particles    <<  ";" << std::endl;
+            _output << "min_data_per_leaf  = " << _tgp_params -> min_data_per_leaf <<  ";" << std::endl;
+            _output << "wheight_power      = " << _tgp_params -> wheight_power     <<  ";" << std::endl;
+            _output << "wheight_threshold  = " << _tgp_params -> wheight_threshold <<  ";" << std::endl << std::endl;
+        }
+
+        if (_tgp_params -> others.size() > 0)
+        {
+            for (uint index = 0; index < _tgp_params -> others.size(); index += 1)
+            {
+                _output << _tgp_params -> others[index] << ";" << std::endl;
+            }
+        }
+
+        _output << std::endl;
+
+        _output << "mc_pts             = " << MC_PTS << ";" << std::endl;
+        _output << "mc_std             = " << MC_STD << ";" << std::endl;
         _output << "column_headers     = ['Iteration', 'Optimum Iteration', 'y(iteration)', 'ubo_ymean(iteration)', 'ubo_ystd_(iteration)'];";
         _output << std::endl << std::endl;
 
@@ -268,6 +375,40 @@ void LogManager::printLogHeader(void)
 
         // Open file
         _output.open(filename.c_str(), std::ofstream::out | std::ofstream::trunc);
+
+        // Write to file
+        _output << "clear;"                                                    << std::endl;
+        _output << "logtype           = 'Learning Samples';"                   << std::endl;
+        _output << "n_samples         = " << _tgp_params -> samples_to_save << ";" << std::endl;
+
+        if ((*_isTGP)) _output << "surrogate         = 'tgp';"                    << std::endl;
+        else           _output << "surrogate         = 'gp';"                     << std::endl;
+
+        _output << "optimizable       = '" << _func -> name                    << "';" << std::endl;
+        _output << "max_iter          = "  << _opt_params -> n_iterations         <<  ";" << std::endl;
+        _output << "rand_iter         = "  << _opt_params -> n_init_samples       <<  ";" << std::endl;
+        _output << "learning_criteria = '" << _opt_params -> crit_name            << "';" << std::endl;
+        _output << "dims              = "  << _func -> dim                        <<  ";" << std::endl;
+        _output << "sigma_s           = "  << _opt_params -> sigma_s              <<  ";" << std::endl;
+        _output << "epsilon           = "  << _opt_params -> epsilon              <<  ";" << std::endl;
+        _output << "force_jump        = "  << _opt_params -> force_jump           <<  ";" << std::endl;
+        _output << "noise             = "  << _opt_params -> noise                <<  ";" << std::endl << std::endl;
+
+        if ((*_isTGP))
+        {
+            _output << "mcmc_particles    = " << _tgp_params -> mcmc_particles    <<  ";" << std::endl;
+            _output << "min_data_per_leaf = " << _tgp_params -> min_data_per_leaf <<  ";" << std::endl;
+            _output << "wheight_power     = " << _tgp_params -> wheight_power     <<  ";" << std::endl;
+            _output << "wheight_threshold = " << _tgp_params -> wheight_threshold <<  ";" << std::endl << std::endl;
+        }
+
+        if (_tgp_params -> others.size() > 0)
+        {
+            for (uint index = 0; index < _tgp_params -> others.size(); index += 1)
+            {
+                _output << _tgp_params -> others[index] << ";" << std::endl;
+            }
+        }
 
         _output << std::endl;
 
