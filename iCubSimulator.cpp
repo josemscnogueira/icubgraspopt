@@ -135,15 +135,6 @@ void parse_options(int argc, char *argv[])
  */
 int main (int argc, char *argv[])
 {
-    // TGPOptimizablePtr afunc = bayesopt::TGPOptimizableUtils::getOptimizable("RKHS");
-    //
-    // for (double x = -10; x < 10; x+=0.01)
-    // {
-    //     std::cout << std::endl << "x = " << x << " | y = " << afunc -> evaluate(vectord(1,x));
-    // }
-    //
-    // exit(-1);
-
     parse_options(argc, argv);
 
     // Read Json File configuration

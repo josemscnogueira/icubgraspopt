@@ -9,16 +9,12 @@
  *  Include Files                                                                                 *
  **************************************************************************************************/
 #include <RKHS.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
+#include <boost/assign/list_of.hpp>
 
 
-namespace bayesopt {
+namespace bayesopt
+{
 
-
-// const std::vector<double> a_support_1 = {0.1, 0.15, 0.08, 0.3, 0.4};
-// const std::vector<double> a_support_2 = {0.8, 0.85, 0.9, 0.95, 0.92, 0.74, 0.91, 0.89, 0.79, 0.88, 0.86, 0.96, 0.99, 0.82};
-// const std::vector<double> a_vals_1    = {4, -1, 2., -2., 1.};
-// const std::vector<double> a_vals_2    = {3, 4, 2, 1, -1, 2, 2, 3, 3, 2., -1., -2., 4., -3.};
 
 /**************************************************************************************************
  *  Procecure                                                                                     *
@@ -28,6 +24,12 @@ namespace bayesopt {
  **************************************************************************************************/
 RKHS::RKHS(void)
 {
+    std::vector<double> a_support_1 = boost::assign::list_of(0.1)(0.15)(0.08)(0.3)(0.4);
+    std::vector<double> a_support_2 = boost::assign::list_of(0.8)(0.85)(0.9)(0.95)(0.92)(0.74)(0.91)(0.89)(0.79)(0.88)(0.86)(0.96)(0.99)(0.82);
+    std::vector<double> a_vals_1    = boost::assign::list_of(4)(-1)(2.)(-2.)(1.);
+    std::vector<double> a_vals_2    = boost::assign::list_of(3)(4)(2)(1)(-1)(2)(2)(3)(3)(2.)(-1.)(-2.)(4.)(-3.);
+
+
     ymax        =  7;
     ymin        = -4;
     lower_bound = vectord(1, 0);
@@ -49,9 +51,8 @@ RKHS::RKHS(void)
     std::copy(a_vals_2   .begin(), a_vals_2   .end(), _vals_2   .begin());
 
     // Initialize Gaussian Kernels
-    // kernel.init(dim);
-    _hyp_1 = vectord(1, 0.10);
-    _hyp_2 = vectord(1, 0.01);
+    _hyp_1 = 0.10;
+    _hyp_2 = 0.01;
 }
 
 
@@ -61,14 +62,15 @@ RKHS::RKHS(void)
  *  Description: covSEard                                                                         *
  *  Class      : RKHS                                                                             *
  **************************************************************************************************/
- double RKHS::covSEard(const vectord& hyp, const vectord& x1, const vectord& x2)
- {
-     // kernel.setHyperParameters(hyp);
+double RKHS::covSEard(const double hyp, double x1, double x2)
+{
+    x1 /= hyp;
+    x2 /= hyp;
 
-     // return ( boost::numeric::ublas::norm_2(hyp) * boost::numeric::ublas::norm_2(hyp) * kernel(x1, x2));
-     //
-     return -1;
- }
+    double dist = x1 - x2;
+
+    return std::exp(-(dist*dist)/ 2);
+}
 
 
 /**************************************************************************************************
@@ -84,21 +86,19 @@ double RKHS::evaluate(vectord x)
 
     double result = 0.0;
 
-    std::cout << std::endl << _hyp_2 << std::endl; exit(-1);
-
     // First kernel length
     for (uint index = 0; index < _support_2.size(); ++index)
     {
-        result += _vals_2[index] * covSEard(_hyp_2, vectord(1,_support_2[index]), x);
+        result += _vals_2[index] * covSEard(_hyp_2, _support_2[index], x[0]);
     }
 
-    // Second kernel legth
+    // Second kernel length
     for (uint index = 0; index < _support_1.size(); ++index)
     {
-        result += _vals_1[index] * covSEard(_hyp_1, vectord(1,_support_1[index]), x);
+        result += _vals_1[index] * covSEard(_hyp_1, _support_1[index], x[0]);
     }
 
-    return result;
+    return -result;
 }
 
 

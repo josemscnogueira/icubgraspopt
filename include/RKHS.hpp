@@ -18,8 +18,6 @@
 
 #include <specialtypes.hpp> // Bayesopt
 #include <tgpoptimizable.hpp>
-// #include <kernels/kernel_gaussian.hpp>
-
 
 namespace bayesopt {
 
@@ -33,15 +31,13 @@ private:
     vectord             _support_2;
     vectord             _vals_1;
     vectord             _vals_2;
-    vectord             _hyp_1;
-    vectord             _hyp_2;
+    double              _hyp_1;
+    double              _hyp_2;
 
     std::vector<double> a_support_1;
     std::vector<double> a_support_2;
     std::vector<double> a_vals_1;
     std::vector<double> a_vals_2;
-
-    // SEArd   kernel;
 
 public:
     // Constructor
@@ -51,9 +47,9 @@ public:
     ~RKHS(void) { };
 
     // Methods
-    double covSEard      (const vectord&  hyp,  const vectord&     x1, const vectord& x2);
-    double evaluate      (vectord         x);
-    void   initSamples   (vecOfvec&       xx        , vectord&     yy);
+    double covSEard      (const double   hyp, double x1, double x2);
+    double evaluate      (vectord        x);
+    void   initSamples   (vecOfvec&      xx        , vectord&     yy);
     void   getOptParams  (TgpParameters& tgp_params, Parameters& opt_params);
 
     void   loadJson(Json::Value config) { }; // Cannot be loaded
