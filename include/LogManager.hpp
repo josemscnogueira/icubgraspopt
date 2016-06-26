@@ -96,6 +96,8 @@ private:
     bayesopt::TGPOptimizable*  _func;
     bool*                      _isTGP;
 
+    boost::mt19937             _rng_eng;
+
     uint             _type;
     uint             _mode;
 

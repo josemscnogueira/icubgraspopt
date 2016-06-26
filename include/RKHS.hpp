@@ -39,6 +39,9 @@ private:
     std::vector<double> a_vals_1;
     std::vector<double> a_vals_2;
 
+    double              _noise_stddev;
+    boost::mt19937      _rng_eng;
+
 public:
     // Constructor
     RKHS(void);
@@ -47,12 +50,13 @@ public:
     ~RKHS(void) { };
 
     // Methods
-    double covSEard      (const double   hyp, double x1, double x2);
-    double evaluate      (vectord        x);
-    void   initSamples   (vecOfvec&      xx        , vectord&     yy);
-    void   getOptParams  (TgpParameters& tgp_params, Parameters& opt_params);
+    double        covSEard      (const double   hyp, double x1, double x2);
+    double        evaluate      (vectord        x);
+    void          initSamples   (vecOfvec&      xx        , vectord&     yy);
+    void          getOptParams  (TgpParameters& tgp_params, Parameters& opt_params);
 
-    void   loadJson(Json::Value config) { }; // Cannot be loaded
+    void          loadJson(Json::Value config);
+    Json::Value   getJson(void);
 };
 
 } // End of namespace bayesopt

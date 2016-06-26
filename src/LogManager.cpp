@@ -34,6 +34,9 @@ void LogManager::init(void)
 
     // If directory doens't exist, create it
     if (!boost::filesystem::exists(_path_folder)) boost::filesystem::create_directory(_path_folder);
+
+    // Initalize rng_engine
+    _rng_eng.seed(std::time(0));
 }
 
 void LogManager::init(uint type)
@@ -1462,10 +1465,9 @@ void LogManager::getMonteCarloPoints(uint points, const vectord query, std::vect
 {
     // Create Normal distribution
     std::vector<boost::normal_distribution<double> > noise_distribution;
-    boost::mt19937                                   generator;
-                                                     generator.seed(std::time(0));
     vectord                                          query_normalzized = query;
-                          _func -> normalizeVector(query_normalzized);
+
+    _func -> normalizeVector(query_normalzized);
 
     // Update noise distribution according to std_dev
     for(uint index = 0; index < query.size(); index += 1)
@@ -1484,7 +1486,7 @@ void LogManager::getMonteCarloPoints(uint points, const vectord query, std::vect
 
         for (uint curr_dim = 0; curr_dim < query.size(); curr_dim += 1)
         {
-            x_curr[curr_dim] = (noise_distribution[curr_dim])(generator);
+            x_curr[curr_dim] = (noise_distribution[curr_dim])(_rng_eng);
 
             if ( (x_curr[curr_dim] < 0 ) ||
                  (x_curr[curr_dim] > 1 )   )

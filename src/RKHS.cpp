@@ -9,7 +9,9 @@
  *  Include Files                                                                                 *
  **************************************************************************************************/
 #include <RKHS.hpp>
+
 #include <boost/assign/list_of.hpp>
+#include <boost/random.hpp>
 
 
 namespace bayesopt
@@ -53,6 +55,10 @@ RKHS::RKHS(void)
     // Initialize Gaussian Kernels
     _hyp_1 = 0.10;
     _hyp_2 = 0.01;
+
+    // Noise parameters
+    _noise_stddev = 0.0;
+    _rng_eng.seed(std::time(0));
 }
 
 
@@ -67,7 +73,7 @@ double RKHS::covSEard(const double hyp, double x1, double x2)
     x1 /= hyp;
     x2 /= hyp;
 
-    double dist = x1 - x2;
+    double dist   = x1 - x2;
 
     return std::exp(-(dist*dist)/ 2);
 }
@@ -96,6 +102,13 @@ double RKHS::evaluate(vectord x)
     for (uint index = 0; index < _support_1.size(); ++index)
     {
         result += _vals_1[index] * covSEard(_hyp_1, _support_1[index], x[0]);
+    }
+
+    if (_noise_stddev != 0)
+    {
+        boost::normal_distribution<double> noise(0, _noise_stddev);
+
+        result += noise(_rng_eng);
     }
 
     return -result;
@@ -143,6 +156,32 @@ void RKHS::getOptParams(TgpParameters& tgp_params, Parameters& opt_params)
     opt_params.sigma_s           =  3.93;
 
     tgp_params.min_data_per_leaf =  8;
+}
+
+
+/**
+ * Converts object of TGPOptimizable to Json::Value
+ *
+ * @return  Json value that describes the object metadata
+ */
+Json::Value RKHS::getJson(void)
+{
+    Json::Value output                = TGPOptimizable::getJson();
+                output["y_noise_std"] = Json::Value(_noise_stddev);
+
+    return output;
+}
+
+
+/**
+ * Loads Json metadata into TGPOptimizable object
+ *
+ * @param config Metadata in form of Json::Value
+ */
+void RKHS::loadJson(Json::Value config)
+{
+    if (config["y_noise_std"].isNull() != true)
+        _noise_stddev = config["y_noise_std"].asDouble();
 }
 
 } // End of namespace bayesopt
