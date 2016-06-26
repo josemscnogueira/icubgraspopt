@@ -1,13 +1,17 @@
 PROJECT ( myDemo )
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-FIND_PACKAGE(Simox REQUIRED)
-find_package(PythonLibs REQUIRED)
+option(SIMOX_SIMULATION_ENVIRONMENT "Build with Simox simulation environment?" OFF)
 
-IF(Simox_USE_COIN_VISUALIZATION)
-  include_directories(${PROJECT_SOURCE_DIR}/include)
-  include_directories("../bayesopt/include")
-  include_directories("../bayesopt/utils")
-  include_directories(${PYTHON_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES("../bayesopt/include")
+INCLUDE_DIRECTORIES("../bayesopt/utils")
+
+IF(NOT SIMOX_SIMULATION_ENVIRONMENT)
+  FIND_PACKAGE(Boost 1.54.0 REQUIRED COMPONENTS system filesystem program_options)
+  if (Boost_FOUND)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+  endif()
 
   FILE(GLOB SRCS ${PROJECT_SOURCE_DIR}/iCubSimulator.cpp
                  ${PROJECT_SOURCE_DIR}/src/OptFuncs.cpp
@@ -15,41 +19,50 @@ IF(Simox_USE_COIN_VISUALIZATION)
                  ${PROJECT_SOURCE_DIR}/src/RKHS.cpp
                  ${PROJECT_SOURCE_DIR}/src/OptimizablesManager.cpp
                  ${PROJECT_SOURCE_DIR}/src/TGPOptimization.cpp)
-                 #${PROJECT_SOURCE_DIR}/src/iCub.cpp
-                 #${PROJECT_SOURCE_DIR}/src/iCubHand.cpp
-                 #${PROJECT_SOURCE_DIR}/src/ApproachMovementSpace.cpp
-                 #${PROJECT_SOURCE_DIR}/src/OrientedBoundingBox.cpp
-                 #${PROJECT_SOURCE_DIR}/src/iCubOptParameters.cpp
-                 #${PROJECT_SOURCE_DIR}/src/iCubOptimizable.cpp
-                 #${PROJECT_SOURCE_DIR}/src/Window.cpp)
 
-  FILE(GLOB INCS ${PROJECT_SOURCE_DIR}/include/OptFuncs.hpp
-                 ${PROJECT_SOURCE_DIR}/include/LogManager.hpp
-                 ${PROJECT_SOURCE_DIR}/include/RKHS.hpp
-                 ${PROJECT_SOURCE_DIR}/include/OptimizablesManager.hpp
-                 ${PROJECT_SOURCE_DIR}/include/TGPOptimization.hpp)
-                 #${PROJECT_SOURCE_DIR}/include/iCub.hpp
-                 #${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp
-                 #${PROJECT_SOURCE_DIR}/include/iCubHand.hpp
-                 #${PROJECT_SOURCE_DIR}/include/ApproachMovementSpace.hpp
-                 #${PROJECT_SOURCE_DIR}/include/OrientedBoundingBox.hpp
-                 #${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp
-                 #${PROJECT_SOURCE_DIR}/include/iCubOptimizable.hpp
-                 #${PROJECT_SOURCE_DIR}/include/Window.hpp)
+  set(CMAKE_CXX_FLAGS "-Wall -Wno-unused-local-typedefs")
 
-  set(GUI_MOC_HDRS )
-  #set(GUI_MOC_HDRS ${PROJECT_SOURCE_DIR}/include/Window.hpp)
-  set(GUI_UIS ${PROJECT_SOURCE_DIR}/ui/iCubSimulator.ui)
-  set(CMAKE_CXX_FLAGS "-Wall -lpthread -Wno-unused-local-typedefs")
+  add_executable(myDemo ${SRCS})
 
-  SimoxQtApplication(${PROJECT_NAME} "${SRCS}" "${INCS}" "${GUI_MOC_HDRS}" "${GUI_UIS}")
-ENDIF()
+  TARGET_LINK_LIBRARIES(myDemo ${Boost_LIBRARIES} libbayesopt.a libnlopt.a libjsoncpp.a)
+ELSE()
+  FIND_PACKAGE(Simox REQUIRED)
 
-find_package(OpenMP)
-if (OPENMP_FOUND)
-  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-ENDIF()
+  IF(Simox_USE_COIN_VISUALIZATION)
+    FILE(GLOB SRCS ${PROJECT_SOURCE_DIR}/iCubSimulator.cpp
+                   ${PROJECT_SOURCE_DIR}/src/OptFuncs.cpp
+                   ${PROJECT_SOURCE_DIR}/src/LogManager.cpp
+                   ${PROJECT_SOURCE_DIR}/src/RKHS.cpp
+                   ${PROJECT_SOURCE_DIR}/src/OptimizablesManager.cpp
+                   ${PROJECT_SOURCE_DIR}/src/TGPOptimization.cpp
+                   ${PROJECT_SOURCE_DIR}/src/OrientedBoundingBox.cpp
+                   ${PROJECT_SOURCE_DIR}/src/iCub.cpp
+                   ${PROJECT_SOURCE_DIR}/src/iCubHand.cpp
+                   ${PROJECT_SOURCE_DIR}/src/ApproachMovementSpace.cpp
+                   ${PROJECT_SOURCE_DIR}/src/iCubOptParameters.cpp
+                   ${PROJECT_SOURCE_DIR}/src/iCubOptimizable.cpp
+                   ${PROJECT_SOURCE_DIR}/src/Window.cpp)
 
-target_link_libraries(myDemo libbayesopt.a libnlopt.a libjsoncpp.a ${PYTHON_LIBRARIES})
+    FILE(GLOB INCS ${PROJECT_SOURCE_DIR}/include/OptFuncs.hpp
+                   ${PROJECT_SOURCE_DIR}/include/LogManager.hpp
+                   ${PROJECT_SOURCE_DIR}/include/RKHS.hpp
+                   ${PROJECT_SOURCE_DIR}/include/OptimizablesManager.hpp
+                   ${PROJECT_SOURCE_DIR}/include/TGPOptimization.hpp
+                   ${PROJECT_SOURCE_DIR}/include/OrientedBoundingBox.hpp
+                   ${PROJECT_SOURCE_DIR}/include/iCub.hpp
+                   ${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp
+                   ${PROJECT_SOURCE_DIR}/include/iCubHand.hpp
+                   ${PROJECT_SOURCE_DIR}/include/ApproachMovementSpace.hpp
+                   ${PROJECT_SOURCE_DIR}/include/iCubOptParameters.hpp
+                   ${PROJECT_SOURCE_DIR}/include/iCubOptimizable.hpp
+                   ${PROJECT_SOURCE_DIR}/include/Window.hpp)
+
+    set(GUI_MOC_HDRS ${PROJECT_SOURCE_DIR}/include/Window.hpp)
+    set(GUI_UIS ${PROJECT_SOURCE_DIR}/ui/iCubSimulator.ui)
+    set(CMAKE_CXX_FLAGS "-Wall -std=gnu++11 -lpthread -Wno-unused-local-typedefs")
+
+    SimoxQtApplication(${PROJECT_NAME} "${SRCS}" "${INCS}" "${GUI_MOC_HDRS}" "${GUI_UIS}")
+
+    target_link_libraries(myDemo libbayesopt.a libnlopt.a libjsoncpp.a)
+  ENDIF()
+ENDIF(SIMOX_SIMULATION_ENVIRONMENT)

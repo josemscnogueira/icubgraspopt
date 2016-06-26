@@ -11,6 +11,7 @@
  **************************************************************************************************/
 #include <OrientedBoundingBox.hpp>
 
+#include <Eigen/Dense>
 
 /**************************************************************************************************
  *  Used namespaces                                                                               *
@@ -21,6 +22,9 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
+using Eigen::Vector3f;
+using Eigen::Matrix3f;
+using Eigen::Matrix4f;
 
 
 /**************************************************************************************************
@@ -29,14 +33,10 @@ using std::vector;
 namespace VirtualRobot
 {
 
-
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: Constructor                                                                      *
- *  Class      : OrienteBoundingBox                                                               *
- **************************************************************************************************/
-OrientedBoundingBox::OrientedBoundingBox(void)
+/**
+ * Constructor overload helpers
+ */
+void OrientedBoundingBox::init(void)
 {
     object             .reset();
     mean               .setZero();
@@ -48,15 +48,10 @@ OrientedBoundingBox::OrientedBoundingBox(void)
     parameters.global.vertices.clear();
 }
 
-
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: Constructor                                                                      *
- *  Class      : OrienteBoundingBox                                                               *
- **************************************************************************************************/
-OrientedBoundingBox::OrientedBoundingBox(SceneObjectPtr object) : OrientedBoundingBox()
+void OrientedBoundingBox::init(SceneObjectPtr object)
 {
+    init();
+
     this -> object = object;
 
     // Get Object Trimesh and pose
@@ -90,6 +85,30 @@ OrientedBoundingBox::OrientedBoundingBox(SceneObjectPtr object) : OrientedBoundi
 
     // Debug Print
     // print();
+}
+
+
+/**************************************************************************************************
+ *  Procecure                                                                                     *
+ *                                                                                                *
+ *  Description: Constructor                                                                      *
+ *  Class      : OrienteBoundingBox                                                               *
+ **************************************************************************************************/
+OrientedBoundingBox::OrientedBoundingBox(void)
+{
+    init();
+}
+
+
+/**************************************************************************************************
+ *  Procecure                                                                                     *
+ *                                                                                                *
+ *  Description: Constructor                                                                      *
+ *  Class      : OrienteBoundingBox                                                               *
+ **************************************************************************************************/
+OrientedBoundingBox::OrientedBoundingBox(SceneObjectPtr object)
+{
+    init(object);
 }
 
 
