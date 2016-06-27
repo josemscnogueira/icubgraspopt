@@ -35,12 +35,13 @@ iCubOptParameters::iCubOptParameters(void)
     n_grasp_trials  = 1;
     trial_stddev    = 0.002;
     grasp_threshold = 0.0001;
+    object          = std::string("WaterBottle");
 };
 
 /**
  * Constructor
  */
-iCubOptParameters::iCubOptParameters(Json::Value config)
+iCubOptParameters::iCubOptParameters(Json::Value config) : iCubOptParameters()
 {
     loadJson(config);
 };

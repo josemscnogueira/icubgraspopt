@@ -1,7 +1,9 @@
 #include <json/json.h>
 
 #include "LogManager.hpp"
+#include "iCubOptParameters.hpp"
 #include "Window.hpp"
+
 
 
 /**
@@ -49,7 +51,7 @@ int main (int argc, char *argv[])
                 std::cout << "Simulator Started" << std::endl;
 
                 // Simulator Window Initialization
-                SimWindow = new ShowWindow(test_idx, total_tests);
+                SimWindow = new ShowWindow(test_idx, total_tests, use_tgp, log_mode, read_config);
 
                 // Simulator Main Loop
                 SimWindow -> main();

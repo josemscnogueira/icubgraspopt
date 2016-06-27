@@ -17,7 +17,6 @@
 #include <Window.hpp>
 
 #include <tgpoptimizable.hpp>
-#include <iCubOptParameters.hpp>
 #include <iCubOptimizable.hpp>
 #include <TGPOptimization.hpp>
 #include <LogManager.hpp>
@@ -83,6 +82,11 @@ ShowWindow::ShowWindow(Qt::WFlags flags)
     selectSliderMode(POWER_GRIP);
     selectMoveHand  (LEDO      );
 
+    this -> test_index  = 0;
+    this -> total_tests = 1;
+    this -> use_tgp     = false;
+    this -> log_mode    = LOG_LEARNING | MONTE_CARLO_OPT;
+
     best_results = LearningQueueWrapper(0);
 }
 
@@ -97,6 +101,37 @@ ShowWindow::ShowWindow(uint test_index, uint total_tests, Qt::WFlags flags)
 {
     this -> test_index  = test_index;
     this -> total_tests = total_tests;
+    this -> use_tgp     = use_tgp;
+    this -> log_mode    = log_mode;
+
+    selectSliderMode(icub_param.grasp);
+    selectMoveHand  (icub_param.position);
+
+    optimizeGrasp();
+}
+
+/**************************************************************************************************
+ *  Procecure                                                                                     *
+ *                                                                                                *
+ *  Description: Constructor                                                                      *
+ *  Class      : ShowWindow                                                                       *
+ **************************************************************************************************/
+ShowWindow::ShowWindow(uint test_index, uint total_tests, bool use_tgp, uint log_mode, Json::Value config, Qt::WFlags flags)
+: ShowWindow(flags)
+{
+    this -> test_index  = test_index;
+    this -> total_tests = total_tests;
+    this -> use_tgp     = use_tgp;
+    this -> log_mode    = log_mode;
+    this -> configs     = config;
+
+    if (!config["iCubOptParameters"].isNull())
+    {
+        this -> icub_param  = iCubOptParameters(config["iCubOptParameters"]);
+    }
+
+    selectSliderMode(icub_param.grasp);
+    selectMoveHand  (icub_param.position);
 
     optimizeGrasp();
 }
@@ -228,7 +263,7 @@ void ShowWindow::loadScene(void)
     if(!scene) scene = SceneIO::loadScene("data/iCub_scene.xml");
 
     environment        = scene  -> getSceneObjectSet    ("Environment");
-    objects.push_back(   scene  -> getManipulationObject("WaterBottle" ));
+    objects.push_back(   scene  -> getManipulationObject(icub_param.object.c_str()));
     objects.push_back(   scene  -> getManipulationObject("Table"));
     objects.push_back(   scene  -> getManipulationObject("Mug"));
 
@@ -510,57 +545,40 @@ void ShowWindow::optimizeGrasp(void)
 
 void ShowWindow::optimizeGraspThread(void)
 {
-    Parameters        opt_param;
-    TgpParameters     tgp_param;
-
-    iCubOptParameters icub_param;
-                      icub_param.grasp            = slider_mode - 1;
-                      icub_param.position         = movehand_mode;
-                      icub_param.object           = target_object -> getName();
-                      icub_param.default_query    = vectord(7);
-
-                      icub_param.default_query[0] = 303.834;
-                      icub_param.default_query[1] = 419.027;
-                      icub_param.default_query[2] = 277.001;
-                      icub_param.default_query[3] = 336.682;
-                      icub_param.default_query[4] = 337.414;
-                      icub_param.default_query[5] = 615.839;
-                      icub_param.default_query[6] = -2.178;
-
-                      icub_param.active_variables.clear();
-                      icub_param.active_variables.push_back(TRANS_X);
-                      icub_param.active_variables.push_back(TRANS_Y);
-
     iCubOptimizable*  func = new iCubOptimizable(icub, target_object, icub_param);
 
     vectord           bestpoint, upper, lower;
 
-    // Set parameters aux
-    // icub_param.n_grasp_trials = func -> dim + 1;
-    icub_param.n_grasp_trials = 1;
-
     // Fill optimization parameters
     func -> getOptParams(tgp_param , opt_param);
 
-    // Get Uncertainty Matrix for Unscented Expected Improvement
-    matrixd px = func -> getUncertaintyMatrix(MC_STD); // Must be Normalized for montecarlo sampling
-    bayesopt::UnscentedExpectedImprovement::convertMatrixToParams(opt_param, px);
+    // Load Parameters from json config file
+    if (!configs["Parameters"].isNull())
+    {
+        opt_param.loadJson(configs["Parameters"]);
+        std::cout << std::endl << "Loaded Parameters";
+    }
+
+    if (!configs["TgpParameters"].isNull())
+    {
+        tgp_param.loadJson(configs["TgpParameters"]);
+        std::cout << std::endl << "Loaded TgpParameters";
+    }
+
+    // See if Optimization should use TGP or GP
+    if (!configs["useTGP"].isNull())
+    {
+        use_tgp = configs["useTGP"].asBool();
+    }
+
+    // Set logging mode
+    if (!configs["logMode"].isNull())
+    {
+        log_mode = LogManager::stringToLogmode(configs["logMode"].asString());
+    }
 
     // Get Exploration Bounding Box
     func -> getBoundingBox(lower, upper);
-
-    // Auxiliary params
-    // opt_param.crit_name         = "cUEI";
-    // opt_param.n_crit_params     = 2 + 2 + (func -> dim * func -> dim);
-
-    opt_param.n_iterations      =   80;
-    opt_param.n_init_samples    =   20;
-
-    tgp_param.wheight_threshold = 0.00;
-    tgp_param.min_data_per_leaf =   20;
-    tgp_param.wheight_power     =    1;
-
-    tgp_param.samples_to_save   =  100;
 
     if ( (slider_mode   != JOINTS_MODE) &&
          (movehand_mode != ESPH       )   )
@@ -569,20 +587,24 @@ void ShowWindow::optimizeGraspThread(void)
         opt_param.random_seed = ( tgp_param.dimensions * opt_param.n_init_samples * test_index ) + 1;
 
         // Start Optimization
-        TGPOptimization* tgp_opt  = new TGPOptimization(tgp_param, opt_param, (*func), LOG_LEARNING | UNSCENTED_OPT, false, test_index);
-        // TGPOptimization* tgp_opt  = new TGPOptimization(tgp_param, opt_param, (*func), LOG_LEARNING | METRIC_OPT, false, test_index);
+        TGPOptimization* tgp_opt  = new TGPOptimization(tgp_param, opt_param, (*func), log_mode, use_tgp, test_index);
                          tgp_opt ->     setBoundingBox (lower, upper);
                          tgp_opt ->     optimize       (bestpoint);
 
-        if (test_index == (total_tests - 1)) tgp_opt -> printLogFooter();
-
-        exit(0);
+        if (test_index == (total_tests - 1))
+        {
+            tgp_opt -> printLogFooter();
+            tgp_opt -> copyJsonConfig();
+        }
 
         best_results = tgp_opt -> getBestResults();
 
         updateGraspBox();
 
         delete tgp_opt;
+        delete func;
+
+        exit(0);
     }
     else
     {

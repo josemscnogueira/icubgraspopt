@@ -32,6 +32,12 @@
 #include <time.h>
 #include <iostream>
 
+#include <json/json.h>
+
+#include <bayesopt/parameters.hpp>
+
+#include <iCubOptParameters.hpp>
+
 #include <VirtualRobot/Visualization/CoinVisualization/CoinVisualization.h>
 #include <Inventor/sensors/SoTimerSensor.h>
 #include <Inventor/nodes/SoEventCallback.h>
@@ -79,6 +85,7 @@ public:
     // Constructors
     ShowWindow(Qt::WFlags flags = 0);
     ShowWindow(uint test_index, uint total_tests, Qt::WFlags flags = 0);
+    ShowWindow(uint test_index, uint total_tests, bool use_tgp, uint log_mode, Json::Value config, Qt::WFlags flags = 0);
 
     // Destructors
     ~ShowWindow(void);
@@ -160,9 +167,15 @@ protected:
 
         // Optimization
     uint                          prev_grasp;
-    uint                          test_index  = 0;
-    uint                          total_tests = 1;
+    uint                          test_index;
+    uint                          total_tests;
     LearningQueueWrapper          best_results;
+    bayesopt::Parameters          opt_param;
+    bayesopt::TgpParameters       tgp_param;
+    bayesopt::iCubOptParameters   icub_param;
+    bool                          use_tgp;
+    uint                          log_mode;
+    Json::Value                   configs;
 
         // Sliders
     vector<int>                   sliders;

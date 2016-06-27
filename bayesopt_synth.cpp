@@ -186,7 +186,7 @@ int main (int argc, char *argv[])
     // Set logging mode
     if (!read_config["logMode"].isNull())
     {
-        use_tgp = LogManager::stringToLogmode(read_config["logMode"].asString());
+        log_mode = LogManager::stringToLogmode(read_config["logMode"].asString());
     }
 
     // Init Optimization
