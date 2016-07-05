@@ -81,7 +81,7 @@ public:
     ~iCubOptimizable(void) {};
 
     // Methods
-    vector<GraspResult> applyQueryToHand      (const vectord&      query);
+    vector<GraspResult> applyQueryToHand      (const vectord&      query, std::vector<double>& position, std::vector<double>& orientation);
     double              evaluateGraspQuality  (vector<GraspResult> qualities, float& isforceclosure);
     double              evaluate              (vectord             query);
     void                showBestGrasps        (uint index,         LearningQueueWrapper& best_grasps);
@@ -108,7 +108,7 @@ protected:
     uint                              _original_dim;
 
     // Methods
-    GraspQualityPtr   applyQueryToHandMinimal  (const vectord& query);
+    GraspQualityPtr   applyQueryToHandMinimal  (const vectord& query, std::vector<double>& position, std::vector<double>& orientation);
 
 private:
     // Methods

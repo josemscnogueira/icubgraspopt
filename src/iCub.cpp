@@ -17,6 +17,7 @@
  **************************************************************************************************/
 #include <iCub.hpp>
 
+#include <Eigen/Geometry>
 
 /**************************************************************************************************
  *  Used namespaces                                                                               *
@@ -354,22 +355,61 @@ void iCubRobot::approachHand(SceneObjectPtr object, vector<int> sliders, uint mo
  *  Description: approachHand                                                                     *
  *  Class      : iCubRobot                                                                        *
  **************************************************************************************************/
-void iCubRobot::approachHand(SceneObjectPtr object, vector<float> learn_parameters, uint mode, bool reset)
+Eigen::Matrix4f iCubRobot::approachHand(SceneObjectPtr object, vector<float> learn_parameters, uint mode, bool reset)
 {
-    if (learn_parameters.size() != 6) return;
+    if (learn_parameters.size() != 6) return Eigen::Matrix4f();
 
-    if (!space || reset             ) space.reset(new ApproachMovementSpace(object, this -> getEEF()));
+    if (!space || reset) space.reset(new ApproachMovementSpace(object, this -> getEEF()));
 
-    Vector6f                 parameters;
+    Vector6f parameters;
 
-    parameters(POS_DX     ) = (float)learn_parameters[POS_DX];
-    parameters(POS_DY     ) = (float)learn_parameters[POS_DY];
-    parameters(POS_DZ     ) = (float)learn_parameters[POS_DZ];
-    parameters(ANG_Z1     ) = (float)learn_parameters[ANG_Z1];
-    parameters(ANG_Y1     ) = (float)learn_parameters[ANG_Y1];
-    parameters(ANG_Z2     ) = (float)learn_parameters[ANG_Z2];
+    parameters(POS_DX) = (float)learn_parameters[POS_DX];
+    parameters(POS_DY) = (float)learn_parameters[POS_DY];
+    parameters(POS_DZ) = (float)learn_parameters[POS_DZ];
+    parameters(ANG_Z1) = (float)learn_parameters[ANG_Z1];
+    parameters(ANG_Y1) = (float)learn_parameters[ANG_Y1];
+    parameters(ANG_Z2) = (float)learn_parameters[ANG_Z2];
 
-    space -> moveHandDistanceClass(mode, parameters);
+    return space -> moveHandDistanceClass(mode, parameters);
+}
+
+
+/**************************************************************************************************
+ *  Procecure                                                                                     *
+ *                                                                                                *
+ *  Description: approachHand                                                                     *
+ *  Class      : iCubRobot                                                                        *
+ **************************************************************************************************/
+void iCubRobot::approachHand(SceneObjectPtr object, vector<float> learn_parameters, uint mode,
+                             std::vector<double>& position,
+                             std::vector<double>& orientation,
+                             bool reset)
+{
+
+    Eigen::Matrix4f hand_pose = approachHand(object, learn_parameters, mode, reset);
+    Eigen::Matrix4f obj_pose  = object -> getGlobalPose();
+
+    position   .clear(); position   .reserve(3);
+    orientation.clear(); orientation.reserve(4);
+
+    // Define hand posiition
+    for (size_t idx = 0; idx < 3; idx++)
+    {
+        position[idx] = hand_pose(4,idx) - obj_pose(4,idx);
+    }
+
+    Eigen::Matrix3f r_hand = hand_pose.topLeftCorner(3,3);
+    Eigen::Matrix3f r_obj  = obj_pose .topLeftCorner(3,3);
+
+    // Define orientation
+    Eigen::Quaternionf orientation_hand(r_hand);
+    Eigen::Quaternionf orientation_obj (r_obj );
+    Eigen::Quaternionf orientation_q = orientation_hand * orientation_obj.inverse();
+
+    orientation[0] = orientation_q.w();
+    orientation[1] = orientation_q.x();
+    orientation[2] = orientation_q.y();
+    orientation[3] = orientation_q.z();
 }
 
 

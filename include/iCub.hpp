@@ -73,7 +73,8 @@ public:
     uint                              getHandState   (void);
     EndEffectorPtr                    getEEF         (void);
     void                              approachHand   (SceneObjectPtr object, vector<int>   sliders         , uint mode, bool reset = false);
-    void                              approachHand   (SceneObjectPtr object, vector<float> learn_parameters, uint mode, bool reset = false);
+    Eigen::Matrix4f                   approachHand   (SceneObjectPtr object, vector<float> learn_parameters, uint mode, bool reset = false);
+    void                              approachHand   (SceneObjectPtr object, vector<float> learn_parameters, uint mode, std::vector<double>& position, std::vector<double>& orientation, bool reset = false);
 
     uint                              calculateNumberOfDimensionsForLearning(uint mode);
 

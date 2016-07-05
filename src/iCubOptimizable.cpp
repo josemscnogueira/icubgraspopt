@@ -95,7 +95,7 @@ _icubparams(params)
  *  Description: applyQueryToHand                                                                 *
  *  Class      : iCubOptimizable                                                                  *
  **************************************************************************************************/
-vector<GraspResult> iCubOptimizable::applyQueryToHand(const vectord& query)
+vector<GraspResult> iCubOptimizable::applyQueryToHand(const vectord& query, std::vector<double>& position, std::vector<double>& orientation)
 {
     // Variables
     vector<GraspResult>     qualities;
@@ -124,11 +124,13 @@ vector<GraspResult> iCubOptimizable::applyQueryToHand(const vectord& query)
             }
         }
 
+        std::vector<double> dummy1, dummy2;
+
         // Reset Grasp and Hand configs
-        applyQueryToHandMinimal(vectord(_original_dim, 0));
+        applyQueryToHandMinimal(vectord(_original_dim, 0), dummy1, dummy2);
 
         // Apply inteded query
-        GraspQualityPtr quality = applyQueryToHandMinimal(noise);
+        GraspQualityPtr quality = applyQueryToHandMinimal(noise, position, orientation);
 
         if (!quality) return qualities;
 
@@ -150,7 +152,7 @@ vector<GraspResult> iCubOptimizable::applyQueryToHand(const vectord& query)
  *  Description: applyQueryToHandMinimal                                                          *
  *  Class      : iCubOptimizable                                                                  *
  **************************************************************************************************/
-GraspQualityPtr iCubOptimizable::applyQueryToHandMinimal(const vectord& query)
+GraspQualityPtr iCubOptimizable::applyQueryToHandMinimal(const vectord& query, std::vector<double>& position, std::vector<double>& orientation)
 {
     GraspQualityPtr result;
 
@@ -225,9 +227,11 @@ double iCubOptimizable::evaluate(vectord query)
 
     chooseActiveVariables(query);
 
+    std::vector<double> dummy1, dummy2;
+
     // query = _icubparams.default_query;
 
-    return -evaluateGraspQuality(applyQueryToHand(query), isforceclosure);
+    return -evaluateGraspQuality(applyQueryToHand(query, dummy1, dummy2), isforceclosure);
 }
 
 
@@ -383,7 +387,9 @@ void iCubOptimizable::showBestGrasps(uint index, LearningQueueWrapper& best_gras
     {
         cout << endl << "Best Query:   " << best_queries[index] << endl;
 
-        evaluateGraspQuality(applyQueryToHand(best_queries[index]), isforceclosure);
+        std::vector<double> dummy1, dummy2;
+
+        evaluateGraspQuality(applyQueryToHand(best_queries[index], dummy1, dummy2), isforceclosure);
     }
 }
 
