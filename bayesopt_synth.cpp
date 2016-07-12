@@ -153,7 +153,7 @@ int main (int argc, char *argv[])
     if (!func)
     {
         std::cout << std::endl << "TGPOptimizable was incorrect";
-        std::cout << std::endl << "Terminating program" << std::endl;;
+        std::cout << std::endl << "Terminating program" << std::endl;
 
         exit(-1);
     }
@@ -175,6 +175,16 @@ int main (int argc, char *argv[])
     {
         tgp_param.loadJson(read_config["TgpParameters"]);
         std::cout << std::endl << "Loaded TgpParameters";
+    }
+
+    // Convert input noise params to learning criteria params
+    if (opt_param.crit_name.compare("cUEI") == 0)
+    {
+        if (UnscentedExpectedImprovement::convertMatrixToParams(opt_param, func -> dim) != 0)
+        {
+            std::cout << std::endl << "Given noise input matrix had invalid size";
+            std::cout << std::endl << "Terminating program" << std::endl;
+        }
     }
 
     // See if Optimization should use TGP or GP
