@@ -437,8 +437,8 @@ void TGPOptimization::copyJsonConfig(void)
     config["LogMode"       ] = Json::Value(LogManager::logmodeToString(_printmode));
     config["useTGP"]         = Json::Value(_isTGP);
 
-    // TODO make filepath dynamic
     LogManager::createJsonConfigFile(config, "settings/final_opt_cfg.json");
+    _log -> copyFinalJsonConfig     (config, "settings/final_opt_cfg.json", true);
 }
 
 } // End namespace bayesopt

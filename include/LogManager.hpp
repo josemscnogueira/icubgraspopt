@@ -70,6 +70,7 @@ public:
     void printFuncProfile       (uint points = 100);
     void printMonteCarlo        (uint points, const vectord query, double              std_dev);
     void printMonteCarlo        (uint points, const vectord query, std::vector<double> std_dev);
+    void copyFinalJsonConfig    (Json::Value config, std::string config_path, bool compare);
 
     // Static methods
     static std::string optimizationToString(bool                      isTGP,

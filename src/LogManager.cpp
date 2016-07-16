@@ -1590,7 +1590,7 @@ void LogManager::createJsonConfigFile(Json::Value config, std::string config_pat
     // Creater path excluding the json file
     for (uint folder = 0; folder < (file_tree.size() - 1); folder += 1)
     {
-        folder_path += file_tree[folder];
+        folder_path += file_tree[folder] + "/";
     }
 
     fs::path folderpath(folder_path);
@@ -1603,6 +1603,56 @@ void LogManager::createJsonConfigFile(Json::Value config, std::string config_pat
     config_file.open(config_path.c_str(), std::ofstream::out | std::ofstream::trunc);
     config_file << json_writer.write(config);
     config_file.close();
+}
+
+
+template<typename InputIterator1, typename InputIterator2>
+bool range_equal(InputIterator1 first1, InputIterator1 last1,
+                 InputIterator2 first2, InputIterator2 last2)
+{
+    while(first1 != last1 && first2 != last2)
+    {
+        if(*first1 != *first2) return false;
+        ++first1;
+        ++first2;
+    }
+    return (first1 == last1) && (first2 == last2);
+}
+
+/**
+ * Copies Json config to results folder
+ *
+ * @param config      Json object to be saved
+ */
+void LogManager::copyFinalJsonConfig(Json::Value config, std::string config_path, bool compare)
+{
+    std::string json_file_path          = std::string(_path_folder.c_str()) + "/final_opt_cfg.json";
+    std::string original_json_file_path = "settings/opt_cfg.json";
+
+    createJsonConfigFile(config, json_file_path);
+
+    if (compare)
+    {
+        namespace fs = boost::filesystem;
+
+        fs::path original(original_json_file_path);
+        fs::path final   (json_file_path);
+
+        std::ifstream file_original(original.c_str());
+        std::ifstream file_final   (final   .c_str());
+
+        std::istreambuf_iterator<char> begin1(file_original);
+        std::istreambuf_iterator<char> begin2(file_final   );
+        std::istreambuf_iterator<char> end;
+
+        if (range_equal(begin1, end, begin2, end))
+            std::cout << std::endl << "Json configuration files were INDEED equal." << std::endl;
+        else
+            std::cout << std::endl << "Json configuration files were NOT    equal." << std::endl;
+
+        system( (std::string("md5sum ") + std::string(original.c_str())).c_str() );
+        system( (std::string("md5sum ") + std::string(final   .c_str())).c_str() );
+    }
 }
 
 /**
