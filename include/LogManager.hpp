@@ -81,6 +81,8 @@ public:
     static Json::Value readJsonConfig      (std::string               config_path);
     static void        createJsonConfigFile(Json::Value               config,
                                             std::string               config_path);
+    static bool        compareJsonFiles    (std::string               filepath1,
+                                            std::string               filepath2);
 
     static std::string logmodeToString     (uint                      logmode);
     static uint        stringToLogmode     (std::string               logmode);

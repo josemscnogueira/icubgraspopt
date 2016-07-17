@@ -39,8 +39,8 @@ void parse_options(int argc, char *argv[])
         po::options_description desc("Options");
                                 desc.add_options()
                                                 ("help,h"                                         , "Print help messages")
-                                                (",i"                                             , "Test index.\nFrom 0 to n.\nDefault 0.")
-                                                (",n"                                             , "Number of tests for the current batch.\nDefault 1.")
+                                                ("index,i"              , po::value<uint>()       , "Test index.\nFrom 0 to n.\nDefault 0.")
+                                                ("n_tests,n"            , po::value<uint>()       , "Number of tests for the current batch.\nDefault 1.")
                                                 ("create_default_config", po::value<std::string>(), "Creates templeate Json config file.\nIf arg is specified, arg represents the name of the function to be optimized");
 
         po::variables_map vm;
@@ -86,14 +86,14 @@ void parse_options(int argc, char *argv[])
                 exit(0);
             }
 
-            if (vm.count("n"))
+            if (vm.count("n_tests"))
             {
-                total_tests = vm["n"].as<uint>();
+                total_tests = vm["n_tests"].as<uint>();
             }
 
-            if (vm.count("i"))
+            if (vm.count("index"))
             {
-                test_idx = vm["i"].as<uint>();
+                test_idx = vm["index"].as<uint>();
 
                 if (test_idx >= total_tests)
                 {
@@ -157,6 +157,9 @@ int main (int argc, char *argv[])
 
         exit(-1);
     }
+
+    // Load TGPOptimzable configs
+    func -> loadJson(read_config["TGPOptimizable"]);
 
     // Load Default Optimization parameters
     Parameters     opt_param;

@@ -108,7 +108,7 @@ double RKHS::evaluate(vectord x)
     {
         boost::normal_distribution<double> noise(0, _noise_stddev);
 
-        result += noise(_rng_eng);
+        result -= std::abs(noise(_rng_eng));
     }
 
     return -result;
@@ -180,7 +180,7 @@ Json::Value RKHS::getJson(void)
  */
 void RKHS::loadJson(Json::Value config)
 {
-    if (config["y_noise_std"].isNull() != true)
+    if (!config["y_noise_std"].isNull())
         _noise_stddev = config["y_noise_std"].asDouble();
 }
 

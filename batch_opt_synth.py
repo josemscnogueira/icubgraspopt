@@ -26,14 +26,14 @@ def main():
         print "Batch test: " + str(idx) + " / " + str(args.initial_index+args.n_tests-1)
 
         if str(binary_path)[0] != '/':
-            subprocess_args = ["./" + str(binary_path), str(idx), str(args.initial_index+args.n_tests-1)]
+            subprocess_args = ["./" + str(binary_path), "-i", str(idx), "-n", str(args.initial_index+args.n_tests)]
         else:
-            subprocess_args = [       str(binary_path), str(idx), str(args.initial_index+args.n_tests-1)]
+            subprocess_args = [       str(binary_path), "-i", str(idx), "-n", str(args.initial_index+args.n_tests)]
 
         print subprocess_args
 
         subprocess.call(subprocess_args)
 
-        
+
 if __name__ == "__main__":
     main()

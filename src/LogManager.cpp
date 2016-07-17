@@ -1606,19 +1606,6 @@ void LogManager::createJsonConfigFile(Json::Value config, std::string config_pat
 }
 
 
-template<typename InputIterator1, typename InputIterator2>
-bool range_equal(InputIterator1 first1, InputIterator1 last1,
-                 InputIterator2 first2, InputIterator2 last2)
-{
-    while(first1 != last1 && first2 != last2)
-    {
-        if(*first1 != *first2) return false;
-        ++first1;
-        ++first2;
-    }
-    return (first1 == last1) && (first2 == last2);
-}
-
 /**
  * Copies Json config to results folder
  *
@@ -1638,21 +1625,22 @@ void LogManager::copyFinalJsonConfig(Json::Value config, std::string config_path
         fs::path original(original_json_file_path);
         fs::path final   (json_file_path);
 
-        std::ifstream file_original(original.c_str());
-        std::ifstream file_final   (final   .c_str());
-
-        std::istreambuf_iterator<char> begin1(file_original);
-        std::istreambuf_iterator<char> begin2(file_final   );
-        std::istreambuf_iterator<char> end;
-
-        if (range_equal(begin1, end, begin2, end))
+        if (compareJsonFiles(std::string(original.c_str()), std::string(final.c_str())))
             std::cout << std::endl << "Json configuration files were INDEED equal." << std::endl;
         else
             std::cout << std::endl << "Json configuration files were NOT    equal." << std::endl;
-
-        system( (std::string("md5sum ") + std::string(original.c_str())).c_str() );
-        system( (std::string("md5sum ") + std::string(final   .c_str())).c_str() );
     }
+}
+
+bool LogManager::compareJsonFiles(std::string filepath1, std::string filepath2)
+{
+    Json::Value json1 = readJsonConfig(filepath1);
+    Json::Value json2 = readJsonConfig(filepath2);
+
+    json1["Parameters"].removeMember("random_seed");
+    json2["Parameters"].removeMember("random_seed");
+
+    return (json1 == json2);
 }
 
 /**
