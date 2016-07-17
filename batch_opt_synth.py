@@ -22,6 +22,8 @@ def main():
         print args.binary
         exit(-1)
 
+    errors = []
+
     for idx in range(args.initial_index, args.initial_index+args.n_tests):
         print "Batch test: " + str(idx) + " / " + str(args.initial_index+args.n_tests-1)
 
@@ -32,7 +34,10 @@ def main():
 
         print subprocess_args
 
-        subprocess.call(subprocess_args)
+        if subprocess.call(subprocess_args) != 0:
+            errors.append("[ERROR] Test " + str(idx))
+
+    print "errors = ", errors
 
 
 if __name__ == "__main__":
