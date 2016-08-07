@@ -12,6 +12,7 @@
 
 #include <boost/assign/list_of.hpp>
 #include <boost/random.hpp>
+#include <ctime>
 
 
 namespace bayesopt
