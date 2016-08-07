@@ -9,18 +9,18 @@
 /**************************************************************************************************
  *  Include Files                                                                                 *
  **************************************************************************************************/
-#include <iCubGraspQuality.h>
+#include <iCubGraspQuality.hpp>
 
 namespace GraspStudio
 {
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: Constructor                                                                      *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
-iCubGraspQuality::iCubGraspQuality(float object_length, float unit_force, float friction_coeff, int friction_samples)
+/**
+ * Constructor for iCubGraspQuality
+ */
+iCubGraspQuality::iCubGraspQuality(float object_length,
+                                   float unit_force,
+                                   float friction_coeff,
+                                   int   friction_samples)
 {
     _coneGenerator.reset(new ContactConeGenerator(friction_samples, friction_coeff, unit_force));
 
@@ -34,12 +34,11 @@ iCubGraspQuality::iCubGraspQuality(float object_length, float unit_force, float 
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: setContactPoints                                                                 *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Sets the points of contact for grasp metric evaluation
+ *
+ * @param contactPoints Points of contact
+ */
 void iCubGraspQuality::setContactPoints(const std::vector<VirtualRobot::MathTools::ContactPoint>& contactPoints)
 {
     this -> _contactPoints .clear();
@@ -68,12 +67,11 @@ void iCubGraspQuality::setContactPoints(const std::vector<VirtualRobot::MathTool
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: getGraspQuality                                                                  *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Calculates and returns the grasp quality matric
+ *
+ * @return  Grasp quality metric
+ */
 float iCubGraspQuality::getGraspQuality(void)
 {
     calculateGraspQuality();
@@ -82,12 +80,11 @@ float iCubGraspQuality::getGraspQuality(void)
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: isGraspForceClosure                                                              *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Evaluates if grasp is force closure
+ *
+ * @return  True if grasp is force-closure
+ */
 bool iCubGraspQuality::isGraspForceClosure(void)
 {
     if (!GWSCalculated)
@@ -99,12 +96,10 @@ bool iCubGraspQuality::isGraspForceClosure(void)
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: calculateGWS                                                                     *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Calculates GWS
+ *     [Protected attribute]
+ */
 void iCubGraspQuality::calculateGWS(void)
 {
     bool printAll = false;
@@ -148,19 +143,21 @@ void iCubGraspQuality::calculateGWS(void)
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: calculateConvexHull                                                              *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Calculates convex hull from points of contact
+ *     [Protected]
+ *
+ * @param  points  Points of contact
+ *
+ * @return         Convexhull object
+ */
 VirtualRobot::MathTools::ConvexHull6DPtr iCubGraspQuality::calculateConvexHull(std::vector<VirtualRobot::MathTools::ContactPoint>& points)
 {
     bool printAll = true;
 
     if (_verbose && printAll)
     {
-        std::cout << "Convex hull points for wrench calculation:" << std::endl;
+        GRASPSTUDIO_INFO << "Convex hull points for wrench calculation:" << std::endl;
         printContacts(points);
     }
 
@@ -169,20 +166,26 @@ VirtualRobot::MathTools::ConvexHull6DPtr iCubGraspQuality::calculateConvexHull(s
 
     if (_verbose && printAll)
     {
-        std::cout << "Wrench points:" << endl;
+        GRASPSTUDIO_INFO << "Wrench points:" << endl;
         printContacts(wrenchPoints);
     }
 
     return ConvexHullGenerator::CreateConvexHull(wrenchPoints);
 }
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: createWrenchPoints                                                               *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
-std::vector<VirtualRobot::MathTools::ContactPoint> iCubGraspQuality::createWrenchPoints(std::vector<VirtualRobot::MathTools::ContactPoint>& points, const Eigen::Vector3f& centerOfModel, float objectLengthMM)
+
+/**
+ * Creates Wrench points for convexhull creation from points of contact
+ *
+ * @param points         Points of contact
+ * @param centerOfModel  Center of the object
+ * @param objectLengthMM Object length in mm
+ *
+ * @return               Wrench space points of contact
+ */
+std::vector<VirtualRobot::MathTools::ContactPoint> iCubGraspQuality::createWrenchPoints(std::vector<VirtualRobot::MathTools::ContactPoint>& points,
+                                                                                        const Eigen::Vector3f&                              centerOfModel,
+                                                                                        float                                               objectLengthMM)
 {
     std::vector<VirtualRobot::MathTools::ContactPoint>           result;
     std::vector<VirtualRobot::MathTools::ContactPoint>::iterator iter = points.begin();
@@ -217,12 +220,11 @@ std::vector<VirtualRobot::MathTools::ContactPoint> iCubGraspQuality::createWrenc
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: printContacts                                                                    *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Prints points of contact to stdout
+ *
+ * @param points Points of contact
+ */
 void iCubGraspQuality::printContacts(std::vector<VirtualRobot::MathTools::ContactPoint>& points)
 {
     std::vector<VirtualRobot::MathTools::ContactPoint>::iterator iter = points.begin();
@@ -236,12 +238,13 @@ void iCubGraspQuality::printContacts(std::vector<VirtualRobot::MathTools::Contac
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: calculateHullCenter                                                              *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Calculates convexhull center from convexhull
+ *
+ * @param  hull Convexhull
+ *
+ * @return      Center of convexhull in wrenchspace
+ */
 VirtualRobot::MathTools::ContactPoint iCubGraspQuality::calculateHullCenter(VirtualRobot::MathTools::ConvexHull6DPtr hull)
 {
     if (!hull)
@@ -275,12 +278,13 @@ VirtualRobot::MathTools::ContactPoint iCubGraspQuality::calculateHullCenter(Virt
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: minDistanceToGWSHull                                                             *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Calculates the minimum distance to GWShull
+ *
+ * @param  point  Point of in wrench space
+ *
+ * @return        Distance
+ */
 float iCubGraspQuality::minDistanceToGWSHull(VirtualRobot::MathTools::ContactPoint& point)
 {
     float minDist = FLT_MAX;
@@ -324,12 +328,11 @@ float iCubGraspQuality::minDistanceToGWSHull(VirtualRobot::MathTools::ContactPoi
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: isOriginInGWSHull                                                                *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Evaluates if origin is inside GWShull
+ *
+ * @return  True if origin is inside the GWShull
+ */
 bool iCubGraspQuality::isOriginInGWSHull(void)
 {
     if (!GWSCalculated || !convexHullGWS)
@@ -352,12 +355,13 @@ bool iCubGraspQuality::isOriginInGWSHull(void)
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: minOffset                                                                        *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Calculates the minimum distance from hullcenter to one of its facets
+ *
+ * @param  ch Convexhull
+ *
+ * @return    Distance in wrench space
+ */
 float iCubGraspQuality::minOffset(VirtualRobot::MathTools::ConvexHull6DPtr ch)
 {
     if (!ch)
@@ -383,12 +387,11 @@ float iCubGraspQuality::minOffset(VirtualRobot::MathTools::ConvexHull6DPtr ch)
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: getVolumeGraspMeasure                                                            *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Calculate volume of grasp
+ *
+ * @return  Volume
+ */
 float iCubGraspQuality::getVolumeGraspMeasure(void)
 {
     if (!GWSCalculated)
@@ -406,12 +409,11 @@ float iCubGraspQuality::getVolumeGraspMeasure(void)
 }
 
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: calculateGraspQuality                                                            *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Calculates GraspQuality measure
+ *
+ * @return  TRue if grasp quality was properly calculated
+ */
 bool iCubGraspQuality::calculateGraspQuality(void)
 {
     if (!GWSCalculated) calculateGWS();
@@ -429,19 +431,18 @@ bool iCubGraspQuality::calculateGraspQuality(void)
     if (_verbose)
     {
         GRASPSTUDIO_INFO << std::endl;
-        std::cout << ": GWS volume    : " << convexHullGWS -> volume << std::endl;
-        std::cout << ": GraspQuality  : " << _grasp_quality          << std::endl;
+        GRASPSTUDIO_INFO << ": GWS volume    : " << convexHullGWS -> volume << std::endl;
+        GRASPSTUDIO_INFO << ": GraspQuality  : " << _grasp_quality          << std::endl;
     }
 
     return true;
 }
 
-/**************************************************************************************************
- *  Procecure                                                                                     *
- *                                                                                                *
- *  Description: crossProductPosNormalInv                                                         *
- *  Class      : iCubGraspQuality                                                                 *
- **************************************************************************************************/
+/**
+ * Auxiliary cross Product (simox???)
+ * @param  v1  vector
+ * @return     cross Product output @TODO is this needed?
+ */
 Eigen::Vector3f iCubGraspQuality::crossProductPosNormalInv(const VirtualRobot::MathTools::ContactPoint& v1)
 {
     Eigen::Vector3f res;

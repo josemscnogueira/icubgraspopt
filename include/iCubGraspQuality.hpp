@@ -26,7 +26,10 @@ public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     // Constructors
-    iCubGraspQuality(float object_length, float unit_force = 1.0f, float friction_coeff = 0.35f, int friction_samples = 8);
+    iCubGraspQuality(float object_length,
+                     float unit_force      = 1.0f ,
+                     float friction_coeff  = 0.35f,
+                     int  friction_samples = 8);
 
     // Destructor
     ~iCubGraspQuality() {};
@@ -35,18 +38,19 @@ public:
     virtual float getGraspQuality      (void);
     virtual float getVolumeGraspMeasure(void);
     virtual bool  isGraspForceClosure  (void);
+    virtual bool  calculateGraspQuality(void);
 
-    // ConvexHull Methods
+    // GWShull methods
+    void          calculateGWS         (void);
+    bool          GWSExists            (void) { return GWSCalculated; }
+
+    // Getters
+    VirtualRobot::MathTools::ContactPoint            getCenterGWS(void)     { return convexHullCenterGWS; }
     virtual VirtualRobot::MathTools::ConvexHull6DPtr getConvexHullGWS(void) { return convexHullGWS; }
 
-    void calculateGWS(void);
-    bool GWSExists   (void) { return GWSCalculated; }
-
-    VirtualRobot::MathTools::ContactPoint getCenterGWS(void) { return convexHullCenterGWS; }
-
     // Contact Points Methods
-    virtual void setContactPoints     (const std::vector<VirtualRobot::MathTools::ContactPoint>& contactPoints);
-    virtual bool calculateGraspQuality(void);
+    virtual void setContactPoints(const std::vector<VirtualRobot::MathTools::ContactPoint>& contactPoints);
+
 
     static std::vector<VirtualRobot::MathTools::ContactPoint> createWrenchPoints(std::vector<VirtualRobot::MathTools::ContactPoint>& points,
                                                                                  const Eigen::Vector3f&                              centerOfModel,
