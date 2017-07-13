@@ -117,7 +117,7 @@ iCubRobot::iCubRobot(ScenePtr scene, string robotname)
 
     if(!robot)
     {
-        cout << endl << "[Error] No robot found. Forcing shutdown." << cout;
+        cout << endl << "[Error] No robot found. Forcing shutdown." << endl;
 
         exit(-1);
     }
@@ -168,7 +168,7 @@ iCubRobot::iCubRobot(ScenePtr scene, string robotname, string start_node)
     // Check for robot
     if(!root_robot)
     {
-        cout << endl << "[Error] No robot found. Forcing shutdown." << cout;
+        cout << endl << "[Error] No robot found. Forcing shutdown." << endl;
 
         exit(-1);
     }
@@ -186,7 +186,7 @@ iCubRobot::iCubRobot(ScenePtr scene, string robotname, string start_node)
     // Check for robot part
     if(!robot)
     {
-        cout << endl << "[Error] Robot Part not found. Forcing shutdown." << cout;
+        cout << endl << "[Error] Robot Part not found. Forcing shutdown." << endl;
 
         exit(-1);
     }
